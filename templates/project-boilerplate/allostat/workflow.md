@@ -33,6 +33,8 @@ The principles these routines put into practice — checkpoints, side notes, sin
 
 ## First run — set up the files
 
+This routine covers a **fresh project**. If the project already has real content — code, a README, planning docs, rules files — use **First run — existing project (migrate)** below instead: it protects what the project already knows.
+
 The first time you're in this project, the `allostat/` files are template stubs — guidance inside, no project content yet. Before the normal routines apply, walk the adopter through filling them: don't hand over empty files, and don't silently fill them yourself. This runs once; after it, every session is Session-open → work → Session-close.
 
 1. **Confirm the setup.** Check the `allostat/` folder is in place and file access is scoped to it (the *Session open* capability check). If files are missing, help place them from the template first.
@@ -42,6 +44,19 @@ The first time you're in this project, the `allostat/` files are template stubs 
 5. **Confirm it took.** Start a fresh conversation and check Claude orients from the files. *Check (output):* the files carry real project content, placeholders are filled, and the pointer is deployed. *If it fails:* finish the missing piece before treating setup as done.
 
 After this, the files self-instruct — a fresh conversation loads them and runs Session open below.
+
+## First run — existing project (migrate)
+
+Most projects arrive with history: a README, planning docs, conventions files, months of decisions embedded in prose. Migrating onto Allostat means moving the *living* parts of that history into the canonical files without silently losing any of it. The failure mode this routine exists to prevent is **bulk seeding** — the AI reading everything and writing all the files itself in one pass. That feels efficient and demonstrably drops content; worse, the adopter never learns their own files. Walk, don't bulk.
+
+1. **Inventory first.** List every context-bearing artifact in the project — README, planning/TODO docs, rules files (`.cursorrules`, editor configs), architecture notes, informal decision records. Show the adopter the list and ask what's missing. *Check (output):* the adopter has confirmed the inventory is complete.
+2. **Classify each source: live, archive, or fold-in.** For each artifact, agree: does it stay authoritative where it is (point at it — e.g. a rules file both surfaces already read), become a historical archive (point at it as history), or fold into a canonical file (its content moves)? Record the classification — it becomes a `decisions.md` row at the end. *Check (comparison):* every inventoried artifact has exactly one classification.
+3. **Walk each canonical file, one at a time, drawing on the sources.** In the same dependency order as the fresh-project routine (`project-instructions.md`, then `plan.md`, then the rest). For each: propose a draft **derived from the classified sources**, show it with a note of *which source each part came from*, and let the adopter keep / change / drop / add before it's saved. Never write more than one file ahead of the adopter's review. *Check (state):* no canonical file was written without the adopter seeing its draft.
+4. **Cross-check for silent drops — mandatory, not optional.** After the last file: re-read each source artifact against the canonical set and name anything that appears nowhere — content neither folded in, nor pointed at, nor consciously archived. Surface the orphans and let the adopter decide their home. *Check (comparison):* every load-bearing item in the sources is accounted for. (This step exists because unreviewed migration demonstrably drops content; it is the migrate-branch's version of "confirm it landed.")
+5. **Record the migration.** A `plan.md` session-log entry (what moved, what's archived, what's live-in-place) and a `decisions.md` row for the classification map (e.g. "docs/PLAN.md = archive; .cursorrules = live for code conventions, pointed at not duplicated"). *Check (output):* the next session can reconstruct what happened from the files alone.
+6. **Deploy the pointer and confirm it took** — same as the fresh-project routine, steps 4–5.
+
+*If the adopter asks you to "just fill everything in": explain the drop risk in one sentence, offer the walkthrough, and if they still want bulk seeding, do it — then treat step 4's cross-check as REQUIRED and tell them what it found. The gate bends to the human; the verification doesn't.*
 
 ## Session open
 
