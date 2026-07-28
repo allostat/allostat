@@ -80,8 +80,22 @@ for impl in npm pip; do
   [ "$rc" -eq 2 ] && ok "$impl: detects tool-repo collision (exit 2)" || bad "$impl: collision guard (exit $rc)"
 done
 
-# --- Case 4: usage errors (exit 1).
-say "case 4: usage"
+# --- Case 4: pointer block — all three installers print it, with copy markers.
+say "case 4: pointer block in output"
+POINTER_SENTINEL="This is an Allostat project"
+for impl in sh npm pip; do
+  d="$WORK/ptr-$impl"; mkdir -p "$d"
+  case "$impl" in
+    sh)  out="$(run_sh  "$d")";;
+    npm) out="$(run_npm "$d")";;
+    pip) out="$(run_pip "$d")";;
+  esac
+  printf '%s' "$out" | grep -q "$POINTER_SENTINEL" && ok "$impl: prints pointer block" || bad "$impl: pointer block missing"
+  printf '%s' "$out" | grep -q 'copy from here' && ok "$impl: copy markers present" || bad "$impl: copy markers missing"
+done
+
+# --- Case 5: usage errors (exit 1).
+say "case 5: usage"
 rc=0; node "$NPM_PKG/bin/allostat.js" init "$WORK/nope" >/dev/null 2>&1 || rc=$?
 [ "$rc" -eq 1 ] && ok "npm: bad target exits 1" || bad "npm: bad target (exit $rc)"
 rc=0; PYTHONPATH="$PIP_PKG/src" python3 -m allostat.cli init "$WORK/nope" >/dev/null 2>&1 || rc=$?

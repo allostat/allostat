@@ -204,14 +204,31 @@ def main(argv: "list[str] | None" = None) -> None:
         else "greenfield"
     )
 
+    # The pointer block — keep VERBATIM in sync with the README's "Point your
+    # project at the files" block (the parity test checks all three installers
+    # print it):
+    pointer_block = [
+        "     This is an Allostat project. The canonical files in its `allostat/`",
+        "     folder — `project-instructions.md`, `workflow.md`, `plan.md`,",
+        "     `decisions.md`, … — are the source of truth. At the start of a",
+        "     session, read them, follow `workflow.md`, treat them as authoritative,",
+        "     and flag anything stale rather than just following it.",
+    ]
     lines = [
         "",
         f"allostat/ placed in {target}  ({claude_note})",
         f"  {template_note}",
         "",
         "Next steps (the files take it from here):",
-        "  1. Paste the pointer block (README 'Tell your project to use the files')",
-        "     into your project's instructions field, or use CLAUDE.md on Claude Code.",
+        "  1. Point your project at the files — paste this block into your",
+        "     project's instructions (the Project Instructions field in Claude",
+        "     Desktop, or your surface's equivalent). Using Claude Code? Skip",
+        "     this — the placed CLAUDE.md does it.",
+        "",
+        "     ----- copy from here -----",
+        *pointer_block,
+        "     ----- copy to here -----",
+        "",
     ]
     if mode == "existing":
         lines += [
