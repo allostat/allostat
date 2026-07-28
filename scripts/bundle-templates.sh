@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# bundle-templates.sh — copy the canonical templates into the installer
+# packages before publishing. The bundled copies are PUBLISH ARTIFACTS, not
+# source: they're gitignored, and this script (re)creates them so the npm and
+# pip packages carry a real, current fallback for offline installs.
+#
+# Run from anywhere in the repo:  scripts/bundle-templates.sh
+# Then publish per installers/README.md.
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+SRC="$ROOT/templates/project-boilerplate"
+NPM_DEST="$ROOT/installers/npm/templates/project-boilerplate"
+PIP_DEST="$ROOT/installers/pip/src/allostat/templates/project-boilerplate"
+
+[ -d "$SRC/allostat" ] || { echo "error: $SRC not found — run from the allostat repo" >&2; exit 1; }
+
+rm -rf "$NPM_DEST" "$PIP_DEST"
+mkdir -p "$(dirname "$NPM_DEST")" "$(dirname "$PIP_DEST")"
+cp -R "$SRC" "$NPM_DEST"
+cp -R "$SRC" "$PIP_DEST"
+find "$ROOT/installers" -name '.DS_Store' -delete
+
+echo "bundled: templates/project-boilerplate →"
+echo "  installers/npm/templates/  ($(find "$NPM_DEST" -type f | wc -l | tr -d ' ') files)"
+echo "  installers/pip/src/allostat/templates/  ($(find "$PIP_DEST" -type f | wc -l | tr -d ' ') files)"
+echo "Next: see installers/README.md 'Releasing' for the publish steps."

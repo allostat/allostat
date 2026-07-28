@@ -8,17 +8,27 @@ As your project grows, Allostat keeps the context your AI works from sharp, cons
 
 You need a project on local storage — a folder or repo where an `allostat/` directory can live — and an AI surface that can read and write files in it: **Claude Code, Cursor, or Claude Desktop with file access**. Language-agnostic.
 
-**1. Add the `allostat/` files.** Two ways — both place the **real** template files. *(If an AI assistant ever offers to recreate these files from this README instead, decline: a reconstructed set looks right and silently forks the methodology. Use the real files.)*
+**1. Add the `allostat/` files.** One command — every path places the **real** template files. *(If an AI assistant ever offers to recreate these files from this README instead, decline: a reconstructed set looks right and silently forks the methodology. Use the real files.)*
 
-One command, from your project's parent directory:
+```
+npx allostat init ./your-project
+```
+
+or, if Python is more your speed:
+
+```
+pip install allostat && allostat init ./your-project
+```
+
+Both fetch the current templates from this repo at install time, and fall back to the copy bundled in the package if you're offline — fresh when connected, working always. No Node or Python? The shell fallback fetches current main:
 
 ```
 curl -fsSL https://raw.githubusercontent.com/allostat/allostat/main/init.sh | sh -s -- ./your-project
 ```
 
-Or by hand: get this repo (clone or Download ZIP) and copy `templates/project-boilerplate/allostat/` into your project root — plus `CLAUDE.md` if you use Claude Code (already have a `CLAUDE.md`? add Allostat's block to it, don't replace it).
+Or fully by hand: get this repo (clone or Download ZIP) and copy `templates/project-boilerplate/allostat/` into your project root — plus `CLAUDE.md` if you use Claude Code (already have a `CLAUDE.md`? add Allostat's block to it, don't replace it).
 
-> **Where things go:** the tool's repo and your project's `allostat/` folder are different things that share a name. Don't clone this repo *into* your project — the `allostat/` folder inside your project is reserved for your project's own files; `init.sh` checks for this mistake and stops you.
+> **Where things go:** the tool's repo and your project's `allostat/` folder are different things that share a name. Don't clone this repo *into* your project — the `allostat/` folder inside your project is reserved for your project's own files; every installer checks for this mistake and stops you.
 
 **2. Point your project at the files.** Paste this into your project's instructions (the **Project Instructions** field in Claude Desktop, or your surface's equivalent — using Claude Code? skip this; the placed `CLAUDE.md` does it):
 
@@ -92,13 +102,15 @@ flowchart TD
 2. **Work.**
 3. **Close** — update files, re-deploy, write handoff. You approve each step.
 
+The routines live in your project's `workflow.md`; they also ship as installable skills (this repo's `skills/` folder — `allostat-open`, `allostat-close`, `allostat-checkpoint`) if your surface supports skills. The skills are thin triggers that make your AI run the `workflow.md` routine at the right moment — the files stay the source of truth.
+
 *(There's a fuller model behind why these files exist and how they compose across surfaces — the design reasoning lives in [`concepts.md`](./concepts.md). You don't need it to use Allostat.)*
 
 ## Status
 
-**Working:** templates, drift-check, close/update, handoffs, `init.sh` (placement + collision guard), the migrate branch for existing projects, the `allostat-init` skill.
+**Working:** templates, drift-check, close/update, handoffs, the `allostat` installers on npm and PyPI (bundled templates, behavior-parity-tested against `init.sh`), `init.sh` (placement + collision guard), the migrate branch for existing projects, and the shipped skills — `allostat-init` plus the three session-ritual skills (`allostat-open`, `allostat-close`, `allostat-checkpoint`).
 
-**Planned:** cross-surface deploy guides (which field is "project instructions" on each surface — Desktop/Cowork, Cursor, web), richer init.
+**Planned:** cross-surface deploy guides (which field is "project instructions" on each surface — Desktop/Cowork, Cursor, web).
 
 ## Feedback
 

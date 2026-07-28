@@ -1,1 +1,9 @@
 .DS_Store
+node_modules/
+__pycache__/
+*.egg-info/
+installers/npm/*.tgz
+installers/npm/templates/
+installers/pip/dist/
+installers/pip/build/
+installers/pip/src/allostat/templates/

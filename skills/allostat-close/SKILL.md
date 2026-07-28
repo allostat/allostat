@@ -1,0 +1,51 @@
+---
+name: allostat-close
+description: Run the Allostat session-close ritual — update canonical files, confirm saves, commit, write the handoff. Use when the user says "wrap up", "close the session", "close it out", "end of session", "write the handoff", or signals they're done working in a project with an allostat/ folder. The close is what makes sessions compound — treat a session-end signal as a trigger, not a suggestion.
+---
+
+# allostat-close — carry the session's state forward
+
+You are closing a session in an Allostat project. The routine is NOT in this
+skill — it is the **Session close** and **Writing the handoff** sections of the
+project's own `allostat/workflow.md`, plus any *Closing-protocol additions* in
+its Part 2. Read them and follow them as written. This skill makes sure that
+happens, in the right order, without shortcuts.
+
+## Hard rules (these outrank helpfulness)
+
+1. **The project's `workflow.md` is authoritative, not this skill.** Its Part 2
+   may add close steps or skip rows; they apply.
+2. **Order is load-bearing; the handoff is LAST.** Reflective pass → update
+   canonical files → re-paste deployed surfaces → confirm it landed → commit
+   and push (if version control) → project-specific additions → handoff →
+   name the session. A handoff written before saves are confirmed describes
+   assumed state, not real state.
+3. **"Confirm it landed" means evidence, not intention.** Use the strongest
+   check the setup allows — `git status` showing exactly the edited files, a
+   re-read of what's on disk, or the user confirming manual saves. An edit you
+   made earlier in the conversation is not evidence it's on disk now.
+4. **Nothing derived this session may end up orphaned.** The reflective pass
+   exists to catch content that was produced and referenced but never written
+   into a canonical file. Name orphans; route each to the file that owns it.
+5. **The user gates every write.** Propose the updates per file; apply on
+   approval. If something can't be persisted this session (a re-paste the user
+   must do), it goes at the top of the handoff as a "DO BEFORE THIS HANDOFF IS
+   CONSUMED" item — never silently dropped.
+6. **Handoffs point, they don't restate.** Goals, required reading, a pointer
+   to the routines. Detail that lives in `plan.md` or `decisions.md` is
+   referenced, not copied — copies go stale the moment the files change.
+
+## Flow
+
+1. Read `allostat/workflow.md` **Session close**, **Writing the handoff**, and
+   Part 2's *Closing-protocol additions* / *Handoff conventions*.
+2. Execute the close steps in the project's stated order, gating each write.
+3. Finish by suggesting a short descriptive session name and confirming the
+   wrap.
+
+## What good looks like
+
+Every change has a durable home, deployed copies match canonical (or the gap
+is a blocking carry at the top of the handoff), the commit is pushed and
+confirmed if the project uses version control, and the next session can orient
+from the handoff plus the files alone — no memory of this conversation needed.
