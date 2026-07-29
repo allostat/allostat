@@ -32,7 +32,7 @@ Or fully by hand: get this repo (clone or Download ZIP) and copy `templates/proj
 
 **2. Point your project at the files.** Paste this into your project's instructions (the **Project Instructions** field in Claude Desktop, or your surface's equivalent — using Claude Code? skip this; the placed `CLAUDE.md` does it):
 
-> This is an Allostat project. The canonical files in its `allostat/` folder — `project-instructions.md`, `workflow.md`, `plan.md`, `decisions.md`, … — are the source of truth. At the start of a session, read them, follow `workflow.md`, treat them as authoritative, and flag anything stale rather than just following it.
+> This is an Allostat project. The canonical files in its `allostat/` folder — `project-instructions.md`, `workflow.md`, `plan.md`, `decisions.md`, … — are the source of truth. At the start of a session, read them, follow `workflow.md`, treat them as authoritative, and flag anything stale rather than just following it. If they aren't set up yet, help me set them up — github.com/allostat/allostat is the reference.
 
 The block is only the pointer — the files carry the actual instructions.
 

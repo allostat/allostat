@@ -80,19 +80,29 @@ for impl in npm pip; do
   [ "$rc" -eq 2 ] && ok "$impl: detects tool-repo collision (exit 2)" || bad "$impl: collision guard (exit $rc)"
 done
 
-# --- Case 4: pointer block — all three installers print it, with copy markers.
+# --- Case 4: pointer block — all three installers print the IDENTICAL block.
 say "case 4: pointer block in output"
 POINTER_SENTINEL="This is an Allostat project"
+block_of() {  # extract the text between the copy markers, whitespace-normalized
+  printf '%s\n' "$1" | sed -n '/copy from here/,/copy to here/p' | sed '1d;$d;s/^ *//'
+}
+BLOCK_SH=""; BLOCK_NPM=""; BLOCK_PIP=""
 for impl in sh npm pip; do
   d="$WORK/ptr-$impl"; mkdir -p "$d"
   case "$impl" in
-    sh)  out="$(run_sh  "$d")";;
-    npm) out="$(run_npm "$d")";;
-    pip) out="$(run_pip "$d")";;
+    sh)  out="$(run_sh  "$d")"; BLOCK_SH="$(block_of "$out")";;
+    npm) out="$(run_npm "$d")"; BLOCK_NPM="$(block_of "$out")";;
+    pip) out="$(run_pip "$d")"; BLOCK_PIP="$(block_of "$out")";;
   esac
   printf '%s' "$out" | grep -q "$POINTER_SENTINEL" && ok "$impl: prints pointer block" || bad "$impl: pointer block missing"
   printf '%s' "$out" | grep -q 'copy from here' && ok "$impl: copy markers present" || bad "$impl: copy markers missing"
 done
+[ -n "$BLOCK_SH" ] && [ "$BLOCK_SH" = "$BLOCK_NPM" ] && ok "block text: sh == npm" || { bad "block text: sh vs npm"; diff <(echo "$BLOCK_SH") <(echo "$BLOCK_NPM") || true; }
+[ -n "$BLOCK_SH" ] && [ "$BLOCK_SH" = "$BLOCK_PIP" ] && ok "block text: sh == pip" || { bad "block text: sh vs pip"; diff <(echo "$BLOCK_SH") <(echo "$BLOCK_PIP") || true; }
+# The block must also match the README's, so the most-pasted text can't drift:
+README_BLOCK="$(grep '^> This is an Allostat project' "$ROOT/README.md" | sed 's/^> //')"
+SH_ONELINE="$(printf '%s' "$BLOCK_SH" | tr '\n' ' ' | sed 's/  */ /g;s/ $//')"
+[ "$SH_ONELINE" = "$README_BLOCK" ] && ok "block text matches README" || { bad "block text vs README"; echo "installer: $SH_ONELINE"; echo "readme:    $README_BLOCK"; }
 
 # --- Case 5: usage errors (exit 1).
 say "case 5: usage"

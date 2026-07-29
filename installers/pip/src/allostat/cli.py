@@ -212,7 +212,9 @@ def main(argv: "list[str] | None" = None) -> None:
         "     folder — `project-instructions.md`, `workflow.md`, `plan.md`,",
         "     `decisions.md`, … — are the source of truth. At the start of a",
         "     session, read them, follow `workflow.md`, treat them as authoritative,",
-        "     and flag anything stale rather than just following it.",
+        "     and flag anything stale rather than just following it. If they",
+        "     aren't set up yet, help me set them up — github.com/allostat/allostat",
+        "     is the reference.",
     ]
     lines = [
         "",

@@ -95,7 +95,9 @@ echo "     This is an Allostat project. The canonical files in its \`allostat/\`
 echo "     folder — \`project-instructions.md\`, \`workflow.md\`, \`plan.md\`,"
 echo "     \`decisions.md\`, … — are the source of truth. At the start of a"
 echo "     session, read them, follow \`workflow.md\`, treat them as authoritative,"
-echo "     and flag anything stale rather than just following it."
+echo "     and flag anything stale rather than just following it. If they"
+echo "     aren't set up yet, help me set them up — github.com/allostat/allostat"
+echo "     is the reference."
 echo "     ----- copy to here -----"
 echo ""
 if [ "$MODE" = "existing" ]; then
