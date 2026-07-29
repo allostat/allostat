@@ -4,6 +4,8 @@
 
 **A living context layer** — documents you own that keep your project's AI context sharp, consistent, and current across conversations, context windows, and surfaces, plus the session rituals your AI follows to keep them alive. They grow as your project grows. Setup takes about two minutes; the files do the rest.
 
+Nothing runs: no process, no background service, nothing to start or stop. The files act only when your AI reads them in a session, and removing Allostat is deleting a folder.
+
 ## Get started
 
 You need a project on local storage — a folder or repo where an `allostat/` directory can live. Language-agnostic.
