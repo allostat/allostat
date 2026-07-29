@@ -4,6 +4,8 @@ As your project grows, Allostat keeps the context your AI works from sharp, cons
 
 **Not an app you run** — a folder of files you place in your project, plus session routines your AI follows. Setup takes about two minutes; the files do the rest.
 
+*Why it exists and what makes it different: [why.md](./why.md).*
+
 ## Get started
 
 You need a project on local storage — a folder or repo where an `allostat/` directory can live — and an AI surface that can read and write files in it: **Claude Code, Cursor, or Claude Desktop with file access**. Language-agnostic.
