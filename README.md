@@ -1,47 +1,47 @@
 # Allostat
 
-As your project grows, Allostat keeps the context your AI works from sharp, consistent, and current.
+**Worth reading first (or right after setup):** [why.md](./why.md) — why it exists and what makes it different — and [concepts.md](./concepts.md), the design reasoning underneath.
 
-**Not an app you run** — a folder of files you place in your project, plus session routines your AI follows. Setup takes about two minutes; the files do the rest.
-
-*Why it exists and what makes it different: [why.md](./why.md).*
+**A living context layer** — documents you own that keep your project's AI context sharp, consistent, and current across conversations, context windows, and surfaces, plus the session rituals your AI follows to keep them alive. They grow as your project grows. Setup takes about two minutes; the files do the rest.
 
 ## Get started
 
-You need a project on local storage — a folder or repo where an `allostat/` directory can live — and an AI surface that can read and write files in it: **Claude Code, Cursor, or Claude Desktop with file access**. Language-agnostic.
+You need a project on local storage — a folder or repo where an `allostat/` directory can live. Language-agnostic.
 
 **1. Add the `allostat/` files.** One command — every path places the **real** template files. *(If an AI assistant ever offers to recreate these files from this README instead, decline: a reconstructed set looks right and silently forks the methodology. Use the real files.)*
 
-```
-npx allostat init ./your-project
-```
-
-or, if Python is more your speed:
+Navigate to your project's root folder in your terminal, then any of these works:
 
 ```
-pip install allostat && allostat init ./your-project
+curl -fsSL https://raw.githubusercontent.com/allostat/allostat/main/init.sh | sh -s -- .
 ```
 
-Both fetch the current templates from this repo at install time, and fall back to the copy bundled in the package if you're offline — fresh when connected, working always. No Node or Python? The shell fallback fetches current main:
+with npm:
 
 ```
-curl -fsSL https://raw.githubusercontent.com/allostat/allostat/main/init.sh | sh -s -- ./your-project
+npx allostat init .
 ```
 
-Or fully by hand: get this repo (clone or Download ZIP) and copy `templates/project-boilerplate/allostat/` into your project root — plus `CLAUDE.md` if you use Claude Code (already have a `CLAUDE.md`? add Allostat's block to it, don't replace it).
+or with pip:
+
+```
+pip install allostat && allostat init .
+```
+
+All three fetch the current templates from this repo at install time; the npm and pip packages also carry a bundled copy as an offline fallback. Or fully by hand: get this repo (clone or Download ZIP) and copy `templates/project-boilerplate/allostat/` into your project root — plus `CLAUDE.md` if you use Claude Code (already have a `CLAUDE.md`? add Allostat's block to it, don't replace it).
 
 > **Where things go:** the tool's repo and your project's `allostat/` folder are different things that share a name. Don't clone this repo *into* your project — the `allostat/` folder inside your project is reserved for your project's own files; every installer checks for this mistake and stops you.
 
-**2. Point your project at the files.** Paste this into your project's instructions (the **Project Instructions** field in Claude Desktop, or your surface's equivalent — using Claude Code? skip this; the placed `CLAUDE.md` does it):
+**2. Point your AI at the files.** The simplest start: paste this block into a conversation in your project and go — the first session works from it and helps you make the pointer permanent:
 
 > This is an Allostat project. The canonical files in its `allostat/` folder — `project-instructions.md`, `workflow.md`, `plan.md`, `decisions.md`, … — are the source of truth. At the start of a session, read them, follow `workflow.md`, treat them as authoritative, and flag anything stale rather than just following it. If they aren't set up yet, help me set them up — github.com/allostat/allostat is the reference.
 
-The block is only the pointer — the files carry the actual instructions.
+Its permanent home is your project's instructions (the **Project Instructions** field in Claude Desktop, or your surface's equivalent — using Claude Code? the placed `CLAUDE.md` already does it). The block is only the pointer — the files carry the actual instructions.
 
-**3. Start your first session.** Open a conversation in the project and ask where to start. The pointer you just deployed makes Claude load the files; `workflow.md` runs the rest — it owns the session routines, including this first one:
+**3. Start your first session.** Open a conversation in the project and ask where to start. The pointer you just deployed makes Claude load the files; `workflow.md` runs the rest — it owns the session routines, including this first one. (This works best when your AI can read and write the project's files — Claude Code, Cursor, or Claude Desktop with file access. No file access? `workflow.md` covers paste-based setups; you'll want to be comfortable in the terminal.)
 
 - **Fresh project** → *First run — set up the files*: Claude proposes each file from what you tell it; you keep / change / drop, file by file.
-- **Existing project** (most people) → *First run — existing project (migrate)*: Claude inventories what your project already knows — README, planning docs, rules files — then walks *you* through folding it into the files, with a final cross-check so nothing is silently dropped. If Claude starts bulk-filling the files without you, stop it and point it at that branch.
+- **Existing project** (most people) → *First run — existing project (migrate)*: Claude inventories what your project already knows — README, planning docs, rules files — then walks *you* through folding it into the files, with a final cross-check so nothing is silently dropped. If Claude starts bulk-filling the files without you, stop it and point it back at that routine in `workflow.md`.
 
 **4. Confirm it took.** Start a fresh conversation and ask "where do things stand?" Claude should load your files and orient — a drift-check, then current state and next work. If it doesn't, the pointer isn't deployed or points at the wrong place.
 
@@ -53,16 +53,7 @@ A pointer, not a setup. The routine lives in each project's `workflow.md`.
 
 ## What you just installed
 
-Your project's context — purpose, conventions, decisions, environment, the tools your AI can use — lives in canonical files you own. Four things keep it from rotting as the project grows:
-
-- **One source of truth — sharp, consistent.** Not scattered and half-duplicated across settings, not a different config per surface.
-- **Drift-check — current.** At session start, each canonical file is compared to the copy deployed wherever you're working (a settings field, a rules file); any gap is reconciled before an old line quietly steers the model wrong.
-- **You hold the gate.** Automate the mechanical, gate the meaningful: the routines run themselves — loading, checking, comparing — but nothing rewrites your files or config without your sign-off. That gate is what keeps AI's speed from just shipping mistakes faster.
-- **It compounds.** No cold starts, no lost corrections: upkeep is captured, not redone, and the setup improves with use instead of resetting each conversation — including asking whether a principle still fits, not just re-applying it.
-
-A living configuration: decisions and patterns get captured, principles get revised when they stop fitting, layers extend as the work changes. You can only revise what you can see and edit — hence files you own.
-
-**Drift in practice.** You change a convention in canonical `project-instructions.md`; the copy pasted into your project settings still has the old one. Next session Claude follows the stale copy. The drift-check catches the mismatch up front; you reconcile.
+Your project's context — purpose, conventions, decisions, environment — now lives in canonical files you own, kept sharp (one source of truth), current (a drift-check at every session edge), and yours (nothing rewrites them without your sign-off). It compounds instead of resetting. The full case is in [why.md](./why.md); the design reasoning is in [concepts.md](./concepts.md).
 
 ### The files
 
@@ -106,11 +97,9 @@ flowchart TD
 
 The routines live in your project's `workflow.md`; they also ship as installable skills (this repo's `skills/` folder — `allostat-open`, `allostat-close`, `allostat-checkpoint`) if your surface supports skills. The skills are thin triggers that make your AI run the `workflow.md` routine at the right moment — the files stay the source of truth.
 
-*(There's a fuller model behind why these files exist and how they compose across surfaces — the design reasoning lives in [`concepts.md`](./concepts.md). You don't need it to use Allostat.)*
-
 ## Status
 
-**Working:** templates, drift-check, close/update, handoffs, the `allostat` installers on npm and PyPI (bundled templates, behavior-parity-tested against `init.sh`), `init.sh` (placement + collision guard), the migrate branch for existing projects, and the shipped skills — `allostat-init` plus the three session-ritual skills (`allostat-open`, `allostat-close`, `allostat-checkpoint`).
+**Working:** templates, drift-check, close/update, handoffs, the `allostat` installers on npm and PyPI (fetch-first with a bundled offline fallback, behavior-parity-tested against `init.sh` — including the pointer block they print), `init.sh` (placement + collision guard), the migrate routine for existing projects, and the shipped skills — `allostat-init` plus the three session-ritual skills (`allostat-open`, `allostat-close`, `allostat-checkpoint`).
 
 **Planned:** cross-surface deploy guides (which field is "project instructions" on each surface — Desktop/Cowork, Cursor, web).
 
