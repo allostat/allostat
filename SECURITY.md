@@ -28,6 +28,12 @@ This is a pre-1.0 project with one maintainer. Expect a first reply within a few
 - **Flaws in Claude, GitHub, npm, or PyPI themselves.** Report those to them.
 - **Anything that already assumes write access** to your machine or your repository.
 
+## The bar I'm aiming at
+
+Allostat targets **[OpenSSF OSPS Baseline Level 1](https://baseline.openssf.org/)** — the entry tier for open source projects. Its security-policy requirement (OSPS-VM-02) is that the documentation names a security contact; the OpenSSF Scorecard `Security-Policy` check is the automated form of the same question. Level 1 is the honest bar for a pre-1.0 project with one maintainer; the higher tiers assume a team and a user base this doesn't have yet.
+
+I'm naming it so you can hold me to it. If something here falls short of that bar, tell me through either channel above — that counts as a report. So does arguing the bar is the wrong one for a tool that writes instruction files into your project.
+
 ## Supported versions
 
 Pre-1.0. Fixes go to the latest release only — currently the 0.2.x line.
