@@ -5,6 +5,12 @@ Allostat ships files, not a service. Nothing runs in the background and there is
 1. **The installers.** `init.sh`, `npx allostat`, and `pip install allostat` run on your machine and write into a directory you name.
 2. **The templates they place.** Those files are instructions an AI reads and acts on inside your project, so a flaw in them can become an action taken on your behalf.
 
+## The bar I'm aiming at
+
+Allostat targets **[OpenSSF OSPS Baseline Level 1](https://baseline.openssf.org/)** — the entry tier for open source projects. Its security-policy requirement (OSPS-VM-02) is that the documentation names a security contact; the OpenSSF Scorecard `Security-Policy` check is the automated form of the same question. Level 1 is the honest bar for a pre-1.0 project with one maintainer; the higher tiers assume a team and a user base this doesn't have yet.
+
+I'm naming it so you can hold me to it. If something here falls short of that bar, tell me — that counts as a report. So does arguing the bar is the wrong one for a tool that writes instruction files into your project.
+
 ## Reporting a vulnerability
 
 Use GitHub's private reporting: **[Report a vulnerability](https://github.com/allostat/allostat/security/advisories/new)**. It opens a private thread with the maintainer — not an Issue, and not visible to anyone else. Public Issues stay public forever, so don't file anything exploitable there.
@@ -27,12 +33,6 @@ This is a pre-1.0 project with one maintainer. Expect a first reply within a few
 - **The assistant's output.** It's generated and non-deterministic (see the README's disclaimer). A wrong or unhelpful answer isn't a vulnerability.
 - **Flaws in Claude, GitHub, npm, or PyPI themselves.** Report those to them.
 - **Anything that already assumes write access** to your machine or your repository.
-
-## The bar I'm aiming at
-
-Allostat targets **[OpenSSF OSPS Baseline Level 1](https://baseline.openssf.org/)** — the entry tier for open source projects. Its security-policy requirement (OSPS-VM-02) is that the documentation names a security contact; the OpenSSF Scorecard `Security-Policy` check is the automated form of the same question. Level 1 is the honest bar for a pre-1.0 project with one maintainer; the higher tiers assume a team and a user base this doesn't have yet.
-
-I'm naming it so you can hold me to it. If something here falls short of that bar, tell me through either channel above — that counts as a report. So does arguing the bar is the wrong one for a tool that writes instruction files into your project.
 
 ## Supported versions
 
