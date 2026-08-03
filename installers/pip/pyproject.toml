@@ -3,13 +3,13 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "allostat"
+name = "allostatik"
 version = "0.2.1"
-description = "Installer for Allostat — a folder of canonical context files plus session routines that keep the context your AI works from sharp, consistent, and current. `allostat init ./your-project` places the real template files."
+description = "Installer for Allostatik — a folder of canonical context files plus session routines that keep the context your AI works from sharp, consistent, and current. `allostatik init ./your-project` places the real template files."
 readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "MIT" }
-keywords = ["allostat", "claude", "cursor", "ai", "context", "configuration", "scaffold"]
+keywords = ["allostatik", "claude", "cursor", "ai", "context", "configuration", "scaffold"]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -19,16 +19,16 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/allostat/allostat"
-Issues = "https://github.com/allostat/allostat/issues"
+Homepage = "https://github.com/allostatik/allostatik"
+Issues = "https://github.com/allostatik/allostatik/issues"
 
 [project.scripts]
-allostat = "allostat.cli:main"
+allostatik = "allostatik.cli:main"
 
 [tool.setuptools]
 package-dir = { "" = "src" }
-packages = ["allostat"]
+packages = ["allostatik"]
 include-package-data = true
 
 [tool.setuptools.package-data]
-allostat = ["templates/**/*"]
+allostatik = ["templates/**/*"]

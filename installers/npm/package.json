@@ -1,9 +1,9 @@
 {
-  "name": "allostat",
+  "name": "allostatik",
   "version": "0.2.1",
-  "description": "Installer for Allostat — a folder of canonical context files plus session routines that keep the context your AI works from sharp, consistent, and current. `npx allostat init ./your-project` places the real template files.",
+  "description": "Installer for Allostatik — a folder of canonical context files plus session routines that keep the context your AI works from sharp, consistent, and current. `npx allostatik init ./your-project` places the real template files.",
   "bin": {
-    "allostat": "bin/allostat.js"
+    "allostatik": "bin/allostatik.js"
   },
   "files": [
     "bin",
@@ -14,14 +14,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/allostat/allostat.git"
+    "url": "git+https://github.com/allostatik/allostatik.git"
   },
-  "homepage": "https://github.com/allostat/allostat#readme",
+  "homepage": "https://github.com/allostatik/allostatik#readme",
   "bugs": {
-    "url": "https://github.com/allostat/allostat/issues"
+    "url": "https://github.com/allostatik/allostatik/issues"
   },
   "keywords": [
-    "allostat",
+    "allostatik",
     "claude",
     "cursor",
     "ai",

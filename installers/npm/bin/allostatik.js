@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 /*
- * allostat init — places the allostat/ template files into a project.
+ * allostatik init — places the allostatik/ template files into a project.
  *
  * Node port of init.sh. Template sourcing is fetch-first-with-fallback:
  * try the CURRENT templates from the GitHub repo's main branch, and if the
  * fetch fails (offline, blocked, no tar available) fall back to the copy
  * BUNDLED in this package at publish time. Fresh when online, always works
  * offline, and both paths place real files — never reconstructed ones.
- * Pass --offline (or set ALLOSTAT_OFFLINE=1) to skip the fetch entirely.
+ * Pass --offline (or set ALLOSTATIK_OFFLINE=1) to skip the fetch entirely.
  * Same guards, same verification, same next-steps as init.sh.
  *
  * Mechanical only, by design: this command puts REAL files in the RIGHT
@@ -16,8 +16,8 @@
  * whatever AI surface you use. Automate the mechanical; gate the meaningful.
  *
  * Usage:
- *   npx allostat init /path/to/your-project
- *   npx allostat init .          (from inside the project)
+ *   npx allostatik init /path/to/your-project
+ *   npx allostatik init .          (from inside the project)
  *
  * Exit codes (mirrors init.sh): 1 usage, 2 collision/refuse, 4 incomplete.
  */
@@ -33,7 +33,7 @@ const VERSION = require(path.join(__dirname, '..', 'package.json')).version;
 // Fallback: templates bundled with the package at build/publish time (see build.sh):
 const BUNDLED_BOILERPLATE = path.join(__dirname, '..', 'templates', 'project-boilerplate');
 // Preferred: current templates from the repo's main branch:
-const REPO_TARBALL = 'https://github.com/allostat/allostat/archive/refs/heads/main.tar.gz';
+const REPO_TARBALL = 'https://github.com/allostatik/allostatik/archive/refs/heads/main.tar.gz';
 const FETCH_TIMEOUT_MS = 8000;
 
 /**
@@ -50,7 +50,7 @@ async function fetchLatestBoilerplate(tmpRoot) {
     });
     if (!res.ok) return null;
     const buf = Buffer.from(await res.arrayBuffer());
-    const tarPath = path.join(tmpRoot, 'allostat-main.tar.gz');
+    const tarPath = path.join(tmpRoot, 'allostatik-main.tar.gz');
     fs.writeFileSync(tarPath, buf);
     const untar = spawnSync('tar', ['-xzf', tarPath, '-C', tmpRoot], { timeout: FETCH_TIMEOUT_MS });
     if (untar.status !== 0) return null;
@@ -58,7 +58,7 @@ async function fetchLatestBoilerplate(tmpRoot) {
     const extracted = fs
       .readdirSync(tmpRoot)
       .map((e) => path.join(tmpRoot, e, 'templates', 'project-boilerplate'))
-      .find((p) => fs.existsSync(path.join(p, 'allostat')));
+      .find((p) => fs.existsSync(path.join(p, 'allostatik')));
     return extracted || null;
   } catch {
     return null;
@@ -86,17 +86,17 @@ function fail(msg, code) {
 function usage() {
   process.stdout.write(
     [
-      `allostat ${VERSION} — installer for Allostat (github.com/allostat/allostat)`,
+      `allostatik ${VERSION} — installer for Allostatik (github.com/allostatik/allostatik)`,
       '',
       'Usage:',
-      '  allostat init <path-to-your-project>   place the allostat/ template files',
+      '  allostatik init <path-to-your-project>   place the allostatik/ template files',
       '                                         (fetches current templates from GitHub,',
       '                                         falls back to the bundled copy; --offline',
-      '                                         or ALLOSTAT_OFFLINE=1 skips the fetch)',
-      '  allostat --version                     print version',
-      '  allostat --help                        this message',
+      '                                         or ALLOSTATIK_OFFLINE=1 skips the fetch)',
+      '  allostatik --version                     print version',
+      '  allostatik --help                        this message',
       '',
-      'Allostat is not an app — it is a folder of canonical context files plus',
+      'Allostatik is not an app — it is a folder of canonical context files plus',
       'session routines your AI follows. `init` places the real template files;',
       'your first AI session walks you through filling them (workflow.md owns that).',
       '',
@@ -106,8 +106,12 @@ function usage() {
 
 async function main() {
   const args = process.argv.slice(2).filter((a) => a !== '--offline');
-  const offline =
-    process.argv.includes('--offline') || process.env.ALLOSTAT_OFFLINE === '1';
+  let offline =
+    process.argv.includes('--offline') || process.env.ALLOSTATIK_OFFLINE === '1';
+  if (!offline && process.env.ALLOSTAT_OFFLINE === '1') { // legacy name, accepted until 1.0
+    offline = true;
+    process.stderr.write('note: ALLOSTAT_OFFLINE is deprecated; use ALLOSTATIK_OFFLINE\n');
+  }
 
   if (args.includes('--version') || args.includes('-v')) {
     process.stdout.write(VERSION + '\n');
@@ -118,37 +122,37 @@ async function main() {
     process.exit(args.length === 0 ? 1 : 0);
   }
   if (args[0] !== 'init') {
-    fail(`error: unknown command "${args[0]}" — did you mean: allostat init <path>?`, 1);
+    fail(`error: unknown command "${args[0]}" — did you mean: allostatik init <path>?`, 1);
   }
 
   const target = args[1];
-  if (!target) fail('usage: allostat init /path/to/your-project', 1);
+  if (!target) fail('usage: allostatik init /path/to/your-project', 1);
   const targetAbs = path.resolve(target);
   if (!fs.existsSync(targetAbs) || !fs.statSync(targetAbs).isDirectory()) {
     fail(`error: ${target} is not a directory`, 1);
   }
 
-  // --- Guard: the collision case. If target/allostat exists and looks like
+  // --- Guard: the collision case. If target/allostatik exists and looks like
   // the TOOL's repo (has templates/ or concepts.md), the adopter cloned the
   // tool into the project — the #1 observed setup mistake. Refuse loudly.
-  const targetAllostat = path.join(targetAbs, 'allostat');
-  if (fs.existsSync(targetAllostat)) {
+  const targetAllostatik = path.join(targetAbs, 'allostatik');
+  if (fs.existsSync(targetAllostatik)) {
     const looksLikeToolRepo =
-      fs.existsSync(path.join(targetAllostat, 'templates')) ||
-      fs.existsSync(path.join(targetAllostat, 'concepts.md'));
+      fs.existsSync(path.join(targetAllostatik, 'templates')) ||
+      fs.existsSync(path.join(targetAllostatik, 'concepts.md'));
     if (looksLikeToolRepo) {
       fail(
         [
-          `STOP: ${target}/allostat contains the Allostat tool's own repo, not project files.`,
-          "The allostat/ folder inside a project is reserved for the project's canonical files.",
-          'Move the tool\'s clone elsewhere (e.g. ~/allostat-repo), then re-run.',
+          `STOP: ${target}/allostatik contains the Allostatik tool's own repo, not project files.`,
+          "The allostatik/ folder inside a project is reserved for the project's canonical files.",
+          'Move the tool\'s clone elsewhere (e.g. ~/allostatik-repo), then re-run.',
         ].join('\n'),
         2
       );
     }
     fail(
       [
-        `STOP: ${target}/allostat already exists — refusing to overwrite.`,
+        `STOP: ${target}/allostatik already exists — refusing to overwrite.`,
         'If this is a partial setup, remove or rename it and re-run.',
       ].join('\n'),
       2
@@ -162,12 +166,12 @@ async function main() {
   let templateNote;
   let tmpRoot = null;
   if (!offline) {
-    tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'allostat-'));
+    tmpRoot = fs.mkdtempSync(path.join(os.tmpdir(), 'allostatik-'));
     boilerplate = await fetchLatestBoilerplate(tmpRoot);
   }
   if (boilerplate) {
-    templateNote = 'templates: current main from github.com/allostat/allostat';
-  } else if (fs.existsSync(path.join(BUNDLED_BOILERPLATE, 'allostat'))) {
+    templateNote = 'templates: current main from github.com/allostatik/allostatik';
+  } else if (fs.existsSync(path.join(BUNDLED_BOILERPLATE, 'allostatik'))) {
     boilerplate = BUNDLED_BOILERPLATE;
     templateNote = offline
       ? `templates: bundled with package v${VERSION} (--offline)`
@@ -178,14 +182,14 @@ async function main() {
         'error: could not fetch templates from GitHub and the bundled copy is missing.',
         'Do NOT let an AI reconstruct these files from documentation. Get the real',
         'files instead: reinstall the package, or use the curl fallback in the README',
-        'at github.com/allostat/allostat.',
+        'at github.com/allostatik/allostatik.',
       ].join('\n'),
       3
     );
   }
 
   // --- Place files.
-  fs.cpSync(path.join(boilerplate, 'allostat'), targetAllostat, { recursive: true });
+  fs.cpSync(path.join(boilerplate, 'allostatik'), targetAllostatik, { recursive: true });
 
   // CLAUDE.md: never overwrite an existing one — the managed block gets added
   // by hand (or by your AI, gated) per the template's own instructions.
@@ -194,10 +198,10 @@ async function main() {
   if (fs.existsSync(targetClaudeMd)) {
     fs.copyFileSync(
       path.join(boilerplate, 'CLAUDE.md'),
-      path.join(targetAllostat, 'CLAUDE.md.allostat-block')
+      path.join(targetAllostatik, 'CLAUDE.md.allostatik-block')
     );
     claudeNote =
-      'existing CLAUDE.md left untouched — the Allostat block to add is at allostat/CLAUDE.md.allostat-block';
+      'existing CLAUDE.md left untouched — the Allostatik block to add is at allostatik/CLAUDE.md.allostatik-block';
   } else {
     fs.copyFileSync(path.join(boilerplate, 'CLAUDE.md'), targetClaudeMd);
     claudeNote = 'CLAUDE.md placed (Claude Code manifest; harmless on other surfaces)';
@@ -207,7 +211,7 @@ async function main() {
   }
 
   // --- Verify: every expected file landed.
-  const missing = CORE_FILES.filter((f) => !fs.existsSync(path.join(targetAllostat, f)));
+  const missing = CORE_FILES.filter((f) => !fs.existsSync(path.join(targetAllostatik, f)));
   if (missing.length > 0) {
     fail(`error: placement incomplete, missing: ${missing.join(' ')}`, 4);
   }
@@ -221,17 +225,17 @@ async function main() {
   // project at the files" block (the parity test checks all three installers
   // print it):
   const POINTER_BLOCK = [
-    '     This is an Allostat project. The canonical files in its `allostat/`',
+    '     This is an Allostatik project. The canonical files in its `allostatik/`',
     '     folder — `project-instructions.md`, `workflow.md`, `plan.md`,',
     '     `decisions.md`, … — are the source of truth. At the start of a',
     '     session, read them, follow `workflow.md`, treat them as authoritative,',
     '     and flag anything stale rather than just following it. If they',
-    "     aren't set up yet, help me set them up — github.com/allostat/allostat",
+    "     aren't set up yet, help me set them up — github.com/allostatik/allostatik",
     '     is the reference.',
   ];
   const lines = [
     '',
-    `allostat/ placed in ${target}  (${claudeNote})`,
+    `allostatik/ placed in ${target}  (${claudeNote})`,
     `  ${templateNote}`,
     '',
     'Next steps (the files take it from here):',

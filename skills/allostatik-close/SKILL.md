@@ -1,13 +1,13 @@
 ---
-name: allostat-close
-description: Run the Allostat session-close ritual — update canonical files, confirm saves, commit, write the handoff. Use when the user says "wrap up", "close the session", "close it out", "end of session", "write the handoff", or signals they're done working in a project with an allostat/ folder. The close is what makes sessions compound — treat a session-end signal as a trigger, not a suggestion.
+name: allostatik-close
+description: Run the Allostatik session-close ritual — update canonical files, confirm saves, commit, write the handoff. Use when the user says "wrap up", "close the session", "close it out", "end of session", "write the handoff", or signals they're done working in a project with an allostatik/ folder. The close is what makes sessions compound — treat a session-end signal as a trigger, not a suggestion.
 ---
 
-# allostat-close — carry the session's state forward
+# allostatik-close — carry the session's state forward
 
-You are closing a session in an Allostat project. The routine is NOT in this
+You are closing a session in an Allostatik project. The routine is NOT in this
 skill — it is the **Session close** and **Writing the handoff** sections of the
-project's own `allostat/workflow.md`, plus any *Closing-protocol additions* in
+project's own `allostatik/workflow.md`, plus any *Closing-protocol additions* in
 its Part 2. Read them and follow them as written. This skill makes sure that
 happens, in the right order, without shortcuts.
 
@@ -37,7 +37,7 @@ happens, in the right order, without shortcuts.
 
 ## Flow
 
-1. Read `allostat/workflow.md` **Session close**, **Writing the handoff**, and
+1. Read `allostatik/workflow.md` **Session close**, **Writing the handoff**, and
    Part 2's *Closing-protocol additions* / *Handoff conventions*.
 2. Execute the close steps in the project's stated order, gating each write.
 3. Finish by suggesting a short descriptive session name and confirming the

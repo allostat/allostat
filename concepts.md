@@ -1,6 +1,6 @@
 # concepts.md — the principled why
 
-This is the reasoning behind the methodology — the *why* under the *what*. If you're a Claude working in an Allostat project, read it to ground yourself in what the system is *for*. If you're a person browsing the repo, it's the thinking behind the files, not the files themselves. The README covers what the methodology is and how to set it up; this is the layer underneath it.
+This is the reasoning behind the methodology — the *why* under the *what*. If you're a Claude working in an Allostatik project, read it to ground yourself in what the system is *for*. If you're a person browsing the repo, it's the thinking behind the files, not the files themselves. The README covers what the methodology is and how to set it up; this is the layer underneath it.
 
 It restates the reasoning in lean form rather than pointing at sources, because the full design record it's distilled from lives in the maintainer's working repo. Read it as the distilled *why*; read the README and the templates as the *shape*.
 

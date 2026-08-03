@@ -7,9 +7,9 @@ External references for this project — docs, repos, and sites Claude pulls in 
 ## References
 
 ```yaml
-- name: allostat
+- name: allostatik
   description: the methodology this project's configuration is built on (the layer model, the templates, the loop); reach for it when revisiting how the setup is structured or extending it
-  location: "https://github.com/allostat/allostat"
+  location: "https://github.com/allostatik/allostatik"
 
 # Add an entry per reference, same three fields. Example:
 # - name: Partner API docs

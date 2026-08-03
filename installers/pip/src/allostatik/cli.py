@@ -1,11 +1,11 @@
-"""allostat init — places the allostat/ template files into a project.
+"""allostatik init — places the allostatik/ template files into a project.
 
 Python port of init.sh. Template sourcing is fetch-first-with-fallback: try
 the CURRENT templates from the GitHub repo's main branch, and if the fetch
 fails (offline, blocked) fall back to the copy BUNDLED in this package at
 publish time. Fresh when online, always works offline, and both paths place
 real files — never reconstructed ones. Pass --offline (or set
-ALLOSTAT_OFFLINE=1) to skip the fetch entirely. Same guards, same
+ALLOSTATIK_OFFLINE=1) to skip the fetch entirely. Same guards, same
 verification, same next-steps — behavior parity with the npm package and
 init.sh is a tested invariant (scripts/test-installers.sh).
 
@@ -15,8 +15,8 @@ The walkthrough that fills them stays in workflow.md's first-run routine
 surface you use. Automate the mechanical; gate the meaningful.
 
 Usage:
-    allostat init /path/to/your-project
-    allostat init .          (from inside the project)
+    allostatik init /path/to/your-project
+    allostatik init .          (from inside the project)
 
 Exit codes (mirrors init.sh): 1 usage, 2 collision/refuse, 4 incomplete.
 """
@@ -32,9 +32,9 @@ import urllib.request
 from importlib import resources
 from pathlib import Path
 
-from allostat import __version__
+from allostatik import __version__
 
-REPO_TARBALL = "https://github.com/allostat/allostat/archive/refs/heads/main.tar.gz"
+REPO_TARBALL = "https://github.com/allostatik/allostatik/archive/refs/heads/main.tar.gz"
 FETCH_TIMEOUT_S = 8
 
 CORE_FILES = [
@@ -50,17 +50,17 @@ CORE_FILES = [
 
 EXISTING_PROBES = ["README.md", "docs", ".cursorrules", "PLAN.md", "src"]
 
-USAGE = f"""allostat {__version__} — installer for Allostat (github.com/allostat/allostat)
+USAGE = f"""allostatik {__version__} — installer for Allostatik (github.com/allostatik/allostatik)
 
 Usage:
-  allostat init <path-to-your-project>   place the allostat/ template files
+  allostatik init <path-to-your-project>   place the allostatik/ template files
                                          (fetches current templates from GitHub,
                                          falls back to the bundled copy; --offline
-                                         or ALLOSTAT_OFFLINE=1 skips the fetch)
-  allostat --version                     print version
-  allostat --help                        this message
+                                         or ALLOSTATIK_OFFLINE=1 skips the fetch)
+  allostatik --version                     print version
+  allostatik --help                        this message
 
-Allostat is not an app — it is a folder of canonical context files plus
+Allostatik is not an app — it is a folder of canonical context files plus
 session routines your AI follows. `init` places the real template files;
 your first AI session walks you through filling them (workflow.md owns that).
 """
@@ -73,7 +73,7 @@ def _fail(msg: str, code: int) -> "NoReturn":  # noqa: F821 (py39-compatible)
 
 def _bundled_boilerplate_dir() -> Path:
     """Locate the bundled real template files inside the installed package."""
-    return Path(str(resources.files("allostat"))) / "templates" / "project-boilerplate"
+    return Path(str(resources.files("allostatik"))) / "templates" / "project-boilerplate"
 
 
 def _fetch_latest_boilerplate(tmp_root: Path) -> "Path | None":
@@ -84,7 +84,7 @@ def _fetch_latest_boilerplate(tmp_root: Path) -> "Path | None":
     to the bundle. Never raises.
     """
     try:
-        tar_path = tmp_root / "allostat-main.tar.gz"
+        tar_path = tmp_root / "allostatik-main.tar.gz"
         with urllib.request.urlopen(REPO_TARBALL, timeout=FETCH_TIMEOUT_S) as resp:
             tar_path.write_bytes(resp.read())
         with tarfile.open(tar_path, "r:gz") as tf:
@@ -96,7 +96,7 @@ def _fetch_latest_boilerplate(tmp_root: Path) -> "Path | None":
             tf.extractall(tmp_root)
         for entry in tmp_root.iterdir():
             candidate = entry / "templates" / "project-boilerplate"
-            if (candidate / "allostat").is_dir():
+            if (candidate / "allostatik").is_dir():
                 return candidate
         return None
     except Exception:
@@ -105,7 +105,10 @@ def _fetch_latest_boilerplate(tmp_root: Path) -> "Path | None":
 
 def main(argv: "list[str] | None" = None) -> None:
     raw_args = list(sys.argv[1:] if argv is None else argv)
-    offline = "--offline" in raw_args or os.environ.get("ALLOSTAT_OFFLINE") == "1"
+    offline = "--offline" in raw_args or os.environ.get("ALLOSTATIK_OFFLINE") == "1"
+    if not offline and os.environ.get("ALLOSTAT_OFFLINE") == "1":  # legacy name, accepted until 1.0
+        offline = True
+        print("note: ALLOSTAT_OFFLINE is deprecated; use ALLOSTATIK_OFFLINE", file=sys.stderr)
     args = [a for a in raw_args if a != "--offline"]
 
     if "--version" in args or "-v" in args:
@@ -115,32 +118,32 @@ def main(argv: "list[str] | None" = None) -> None:
         print(USAGE)
         sys.exit(1 if not args else 0)
     if args[0] != "init":
-        _fail(f'error: unknown command "{args[0]}" — did you mean: allostat init <path>?', 1)
+        _fail(f'error: unknown command "{args[0]}" — did you mean: allostatik init <path>?', 1)
 
     if len(args) < 2:
-        _fail("usage: allostat init /path/to/your-project", 1)
+        _fail("usage: allostatik init /path/to/your-project", 1)
     target = args[1]
     target_abs = Path(target).resolve()
     if not target_abs.is_dir():
         _fail(f"error: {target} is not a directory", 1)
 
-    # --- Guard: the collision case. If target/allostat exists and looks like
+    # --- Guard: the collision case. If target/allostatik exists and looks like
     # the TOOL's repo (has templates/ or concepts.md), the adopter cloned the
     # tool into the project — the #1 observed setup mistake. Refuse loudly.
-    target_allostat = target_abs / "allostat"
-    if target_allostat.exists():
-        looks_like_tool_repo = (target_allostat / "templates").is_dir() or (
-            target_allostat / "concepts.md"
+    target_allostatik = target_abs / "allostatik"
+    if target_allostatik.exists():
+        looks_like_tool_repo = (target_allostatik / "templates").is_dir() or (
+            target_allostatik / "concepts.md"
         ).is_file()
         if looks_like_tool_repo:
             _fail(
-                f"STOP: {target}/allostat contains the Allostat tool's own repo, not project files.\n"
-                "The allostat/ folder inside a project is reserved for the project's canonical files.\n"
-                "Move the tool's clone elsewhere (e.g. ~/allostat-repo), then re-run.",
+                f"STOP: {target}/allostatik contains the Allostatik tool's own repo, not project files.\n"
+                "The allostatik/ folder inside a project is reserved for the project's canonical files.\n"
+                "Move the tool's clone elsewhere (e.g. ~/allostatik-repo), then re-run.",
                 2,
             )
         _fail(
-            f"STOP: {target}/allostat already exists — refusing to overwrite.\n"
+            f"STOP: {target}/allostatik already exists — refusing to overwrite.\n"
             "If this is a partial setup, remove or rename it and re-run.",
             2,
         )
@@ -149,13 +152,13 @@ def main(argv: "list[str] | None" = None) -> None:
     # else the copy bundled in this package. NEVER generate or reconstruct —
     # if neither real source is available, the install is broken; stop.
     boilerplate: "Path | None" = None
-    tmp_ctx = tempfile.TemporaryDirectory(prefix="allostat-")
+    tmp_ctx = tempfile.TemporaryDirectory(prefix="allostatik-")
     try:
         if not offline:
             boilerplate = _fetch_latest_boilerplate(Path(tmp_ctx.name))
         if boilerplate is not None:
-            template_note = "templates: current main from github.com/allostat/allostat"
-        elif (_bundled_boilerplate_dir() / "allostat").is_dir():
+            template_note = "templates: current main from github.com/allostatik/allostatik"
+        elif (_bundled_boilerplate_dir() / "allostatik").is_dir():
             boilerplate = _bundled_boilerplate_dir()
             template_note = (
                 f"templates: bundled with package v{__version__} (--offline)"
@@ -168,23 +171,23 @@ def main(argv: "list[str] | None" = None) -> None:
                 "error: could not fetch templates from GitHub and the bundled copy is missing.\n"
                 "Do NOT let an AI reconstruct these files from documentation. Get the real\n"
                 "files instead: reinstall the package, or use the curl fallback in the README\n"
-                "at github.com/allostat/allostat.",
+                "at github.com/allostatik/allostatik.",
                 3,
             )
 
         # --- Place files.
-        shutil.copytree(boilerplate / "allostat", target_allostat)
+        shutil.copytree(boilerplate / "allostatik", target_allostatik)
 
         # CLAUDE.md: never overwrite an existing one — the managed block gets
         # added by hand (or by your AI, gated) per the template's instructions.
         target_claude_md = target_abs / "CLAUDE.md"
         if target_claude_md.exists():
             shutil.copyfile(
-                boilerplate / "CLAUDE.md", target_allostat / "CLAUDE.md.allostat-block"
+                boilerplate / "CLAUDE.md", target_allostatik / "CLAUDE.md.allostatik-block"
             )
             claude_note = (
-                "existing CLAUDE.md left untouched — the Allostat block to add is at "
-                "allostat/CLAUDE.md.allostat-block"
+                "existing CLAUDE.md left untouched — the Allostatik block to add is at "
+                "allostatik/CLAUDE.md.allostatik-block"
             )
         else:
             shutil.copyfile(boilerplate / "CLAUDE.md", target_claude_md)
@@ -193,7 +196,7 @@ def main(argv: "list[str] | None" = None) -> None:
         tmp_ctx.cleanup()
 
     # --- Verify: every expected file landed.
-    missing = [f for f in CORE_FILES if not (target_allostat / f).is_file()]
+    missing = [f for f in CORE_FILES if not (target_allostatik / f).is_file()]
     if missing:
         _fail(f"error: placement incomplete, missing: {' '.join(missing)}", 4)
 
@@ -208,17 +211,17 @@ def main(argv: "list[str] | None" = None) -> None:
     # project at the files" block (the parity test checks all three installers
     # print it):
     pointer_block = [
-        "     This is an Allostat project. The canonical files in its `allostat/`",
+        "     This is an Allostatik project. The canonical files in its `allostatik/`",
         "     folder — `project-instructions.md`, `workflow.md`, `plan.md`,",
         "     `decisions.md`, … — are the source of truth. At the start of a",
         "     session, read them, follow `workflow.md`, treat them as authoritative,",
         "     and flag anything stale rather than just following it. If they",
-        "     aren't set up yet, help me set them up — github.com/allostat/allostat",
+        "     aren't set up yet, help me set them up — github.com/allostatik/allostatik",
         "     is the reference.",
     ]
     lines = [
         "",
-        f"allostat/ placed in {target}  ({claude_note})",
+        f"allostatik/ placed in {target}  ({claude_note})",
         f"  {template_note}",
         "",
         "Next steps (the files take it from here):",

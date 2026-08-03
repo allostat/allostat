@@ -1,33 +1,33 @@
 #!/bin/sh
-# allostat init — places the allostat/ template files into a project.
+# allostatik init — places the allostatik/ template files into a project.
 # Mechanical only, by design: this script fetches REAL files and puts them in
 # the RIGHT place. The walkthrough that fills them stays in workflow.md's
 # first-run routine (greenfield) or its migrate branch (existing project) —
 # run by whatever AI surface you use. Automate the mechanical; gate the meaningful.
 #
 # Usage:
-#   From a clone of allostat/allostat:   ./init.sh /path/to/your-project
-#   Without cloning (public repo):       curl -fsSL https://raw.githubusercontent.com/allostat/allostat/main/init.sh | sh -s -- /path/to/your-project
+#   From a clone of allostatik/allostatik:   ./init.sh /path/to/your-project
+#   Without cloning (public repo):       curl -fsSL https://raw.githubusercontent.com/allostatik/allostatik/main/init.sh | sh -s -- /path/to/your-project
 set -eu
 
-REPO_TARBALL="https://github.com/allostat/allostat/archive/refs/heads/main.tar.gz"
+REPO_TARBALL="https://github.com/allostatik/allostatik/archive/refs/heads/main.tar.gz"
 BOILERPLATE="templates/project-boilerplate"
 
 TARGET="${1:-}"
 [ -n "$TARGET" ] || { echo "usage: init.sh /path/to/your-project" >&2; exit 1; }
 [ -d "$TARGET" ] || { echo "error: $TARGET is not a directory" >&2; exit 1; }
 
-# --- Guard: the collision case. If target/allostat exists and looks like the
+# --- Guard: the collision case. If target/allostatik exists and looks like the
 # TOOL's repo (has templates/ or concepts.md), the adopter cloned the tool into
 # the project — the #1 observed setup mistake. Refuse loudly with the fix.
-if [ -d "$TARGET/allostat" ]; then
-  if [ -d "$TARGET/allostat/templates" ] || [ -f "$TARGET/allostat/concepts.md" ]; then
-    echo "STOP: $TARGET/allostat contains the Allostat tool's own repo, not project files." >&2
-    echo "The allostat/ folder inside a project is reserved for the project's canonical files." >&2
-    echo "Move the tool's clone elsewhere (e.g. ~/allostat-repo), then re-run." >&2
+if [ -d "$TARGET/allostatik" ]; then
+  if [ -d "$TARGET/allostatik/templates" ] || [ -f "$TARGET/allostatik/concepts.md" ]; then
+    echo "STOP: $TARGET/allostatik contains the Allostatik tool's own repo, not project files." >&2
+    echo "The allostatik/ folder inside a project is reserved for the project's canonical files." >&2
+    echo "Move the tool's clone elsewhere (e.g. ~/allostatik-repo), then re-run." >&2
     exit 2
   fi
-  echo "STOP: $TARGET/allostat already exists — refusing to overwrite." >&2
+  echo "STOP: $TARGET/allostatik already exists — refusing to overwrite." >&2
   echo "If this is a partial setup, remove or rename it and re-run." >&2
   exit 2
 fi
@@ -43,7 +43,7 @@ if [ -d "$SCRIPT_DIR/$BOILERPLATE" ]; then
 else
   TMP=$(mktemp -d)
   trap 'rm -rf "$TMP"' EXIT
-  echo "fetching templates from allostat/allostat..."
+  echo "fetching templates from allostatik/allostatik..."
   curl -fsSL "$REPO_TARBALL" | tar -xz -C "$TMP" || {
     echo "error: could not fetch the repo. Do NOT let an AI reconstruct these files" >&2
     echo "from documentation — get the real repo (clone or ZIP) and re-run from it." >&2
@@ -54,13 +54,13 @@ else
 fi
 
 # --- Place files.
-cp -R "$SRC/allostat" "$TARGET/allostat"
+cp -R "$SRC/allostatik" "$TARGET/allostatik"
 
 # CLAUDE.md: never overwrite an existing one — the managed block gets added by
 # hand (or by your AI, gated) per the template's own instructions.
 if [ -f "$TARGET/CLAUDE.md" ]; then
-  cp "$SRC/CLAUDE.md" "$TARGET/allostat/CLAUDE.md.allostat-block"
-  CLAUDE_NOTE="existing CLAUDE.md left untouched — the Allostat block to add is at allostat/CLAUDE.md.allostat-block"
+  cp "$SRC/CLAUDE.md" "$TARGET/allostatik/CLAUDE.md.allostatik-block"
+  CLAUDE_NOTE="existing CLAUDE.md left untouched — the Allostatik block to add is at allostatik/CLAUDE.md.allostatik-block"
 else
   cp "$SRC/CLAUDE.md" "$TARGET/CLAUDE.md"
   CLAUDE_NOTE="CLAUDE.md placed (Claude Code manifest; harmless on other surfaces)"
@@ -69,7 +69,7 @@ fi
 # --- Verify: every expected file landed.
 MISSING=""
 for f in project-instructions.md plan.md decisions.md observations.md vision.md workflow.md knowledge/resources.md knowledge/environment.md; do
-  [ -f "$TARGET/allostat/$f" ] || MISSING="$MISSING $f"
+  [ -f "$TARGET/allostatik/$f" ] || MISSING="$MISSING $f"
 done
 [ -z "$MISSING" ] || { echo "error: placement incomplete, missing:$MISSING" >&2; exit 4; }
 
@@ -80,7 +80,7 @@ for probe in README.md docs .cursorrules PLAN.md src; do
 done
 
 echo ""
-echo "allostat/ placed in $TARGET  ($CLAUDE_NOTE)"
+echo "allostatik/ placed in $TARGET  ($CLAUDE_NOTE)"
 echo ""
 echo "Next steps (the files take it from here):"
 echo "  1. Point your project at the files — paste this block into your"
@@ -91,12 +91,12 @@ echo ""
 echo "     ----- copy from here -----"
 # Keep VERBATIM in sync with the README's "Point your project at the files"
 # block (the parity test checks all three installers print it):
-echo "     This is an Allostat project. The canonical files in its \`allostat/\`"
+echo "     This is an Allostatik project. The canonical files in its \`allostatik/\`"
 echo "     folder — \`project-instructions.md\`, \`workflow.md\`, \`plan.md\`,"
 echo "     \`decisions.md\`, … — are the source of truth. At the start of a"
 echo "     session, read them, follow \`workflow.md\`, treat them as authoritative,"
 echo "     and flag anything stale rather than just following it. If they"
-echo "     aren't set up yet, help me set them up — github.com/allostat/allostat"
+echo "     aren't set up yet, help me set them up — github.com/allostatik/allostatik"
 echo "     is the reference."
 echo "     ----- copy to here -----"
 echo ""

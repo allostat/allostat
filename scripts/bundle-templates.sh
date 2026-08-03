@@ -11,9 +11,9 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 SRC="$ROOT/templates/project-boilerplate"
 NPM_DEST="$ROOT/installers/npm/templates/project-boilerplate"
-PIP_DEST="$ROOT/installers/pip/src/allostat/templates/project-boilerplate"
+PIP_DEST="$ROOT/installers/pip/src/allostatik/templates/project-boilerplate"
 
-[ -d "$SRC/allostat" ] || { echo "error: $SRC not found — run from the allostat repo" >&2; exit 1; }
+[ -d "$SRC/allostatik" ] || { echo "error: $SRC not found — run from the allostatik repo" >&2; exit 1; }
 
 rm -rf "$NPM_DEST" "$PIP_DEST"
 mkdir -p "$(dirname "$NPM_DEST")" "$(dirname "$PIP_DEST")"
@@ -23,5 +23,5 @@ find "$ROOT/installers" -name '.DS_Store' -delete
 
 echo "bundled: templates/project-boilerplate →"
 echo "  installers/npm/templates/  ($(find "$NPM_DEST" -type f | wc -l | tr -d ' ') files)"
-echo "  installers/pip/src/allostat/templates/  ($(find "$PIP_DEST" -type f | wc -l | tr -d ' ') files)"
+echo "  installers/pip/src/allostatik/templates/  ($(find "$PIP_DEST" -type f | wc -l | tr -d ' ') files)"
 echo "Next: see installers/README.md 'Releasing' for the publish steps."

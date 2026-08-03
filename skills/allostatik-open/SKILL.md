@@ -1,13 +1,13 @@
 ---
-name: allostat-open
-description: Run the Allostat session-open ritual — load canonical files, drift-check, orient. Use at the start of any session in a project with an allostat/ folder, or when the user asks "where do things stand", "orient", "catch up", "start the session", or opens with a handoff. Do not start substantive work in an Allostat project before this has run.
+name: allostatik-open
+description: Run the Allostatik session-open ritual — load canonical files, drift-check, orient. Use at the start of any session in a project with an allostatik/ folder, or when the user asks "where do things stand", "orient", "catch up", "start the session", or opens with a handoff. Do not start substantive work in an Allostatik project before this has run.
 ---
 
-# allostat-open — start the session from the files
+# allostatik-open — start the session from the files
 
-You are opening a session in an Allostat project. The routine you are about to
+You are opening a session in an Allostatik project. The routine you are about to
 run is NOT in this skill — it is the **Session open** and **Drift-check**
-sections of the project's own `allostat/workflow.md`. Read them and follow them
+sections of the project's own `allostatik/workflow.md`. Read them and follow them
 as written. This skill exists to make sure that happens, and to hold the rules
 that protect the routine from shortcuts.
 
@@ -33,7 +33,7 @@ that protect the routine from shortcuts.
 ## Flow
 
 1. Locate and read, in order: the handoff (if one exists), then
-   `allostat/workflow.md` **Session open** + **Drift-check**, then the files
+   `allostatik/workflow.md` **Session open** + **Drift-check**, then the files
    they point at (`project-instructions.md`, `plan.md`, and the rest of the
    canonical set).
 2. Execute Session open steps 1–5 exactly as the project's copy states them:

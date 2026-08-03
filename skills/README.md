@@ -1,10 +1,10 @@
 # Skills layer
 
-Layer-4 skills documentation for the Allostat methodology. A skill is a reference note Claude reads when working in a project: what a tool or capability is, how it's set up, how it behaves, and when to use it.
+Layer-4 skills documentation for the Allostatik methodology. A skill is a reference note Claude reads when working in a project: what a tool or capability is, how it's set up, how it behaves, and when to use it.
 
 Skills are *what Claude can do and how it works with your tools* — distinct from *what Claude knows* (Layer 3, `knowledge/`) and *which surface Claude runs on* (Layer 5).
 
-In your own projects, skills live in `allostat/skills/` (see that folder's README in the project boilerplate). This page is the concept doc; the copy-this starting point is `templates/skill_template.md`. The template ships no filled-in skills — you write your own.
+In your own projects, skills live in `allostatik/skills/` (see that folder's README in the project boilerplate). This page is the concept doc; the copy-this starting point is `templates/skill_template.md`. The template ships no filled-in skills — you write your own.
 
 ## What a skill is here
 
@@ -48,4 +48,4 @@ The split also matters for portability: `standard/` skills travel (a fork reconf
 
 ## Adding a skill
 
-Skills live in a project's `allostat/skills/` folder, not here. Copy `templates/skill_template.md` to start one; the per-project `allostat/skills/README.md` has the step-by-step.
+Skills live in a project's `allostatik/skills/` folder, not here. Copy `templates/skill_template.md` to start one; the per-project `allostatik/skills/README.md` has the step-by-step.

@@ -14,7 +14,7 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 # Parity must compare the LOCAL templates, not whatever is on GitHub main —
 # force the bundled path for the npm/pip runs (their fetch-first behavior is
 # exercised separately; the fallback path is this same code path).
-export ALLOSTAT_OFFLINE=1
+export ALLOSTATIK_OFFLINE=1
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
 PASS=0; FAIL=0
@@ -27,13 +27,13 @@ bad()  { FAIL=$((FAIL+1)); say "  FAIL  $*"; }
 NPM_PKG="$WORK/npm-pkg"; PIP_PKG="$WORK/pip-pkg"
 cp -R "$ROOT/installers/npm" "$NPM_PKG"
 cp -R "$ROOT/installers/pip" "$PIP_PKG"
-mkdir -p "$NPM_PKG/templates" "$PIP_PKG/src/allostat/templates"
+mkdir -p "$NPM_PKG/templates" "$PIP_PKG/src/allostatik/templates"
 cp -R "$ROOT/templates/project-boilerplate" "$NPM_PKG/templates/project-boilerplate"
-cp -R "$ROOT/templates/project-boilerplate" "$PIP_PKG/src/allostat/templates/project-boilerplate"
+cp -R "$ROOT/templates/project-boilerplate" "$PIP_PKG/src/allostatik/templates/project-boilerplate"
 
 run_sh()  { sh "$ROOT/init.sh" "$1"; }
-run_npm() { node "$NPM_PKG/bin/allostat.js" init "$1"; }
-run_pip() { PYTHONPATH="$PIP_PKG/src" python3 -m allostat.cli init "$1"; }
+run_npm() { node "$NPM_PKG/bin/allostatik.js" init "$1"; }
+run_pip() { PYTHONPATH="$PIP_PKG/src" python3 -m allostatik.cli init "$1"; }
 # init.sh lives at extraction/init.sh canonically but ships at repo root; accept either:
 [ -f "$ROOT/init.sh" ] || run_sh() { sh "$ROOT/extraction/init.sh" "$1"; }
 
@@ -63,18 +63,18 @@ for impl in npm pip; do
   printf '# my project\n' > "$d/README.md"; printf 'MINE\n' > "$d/CLAUDE.md"
   out="$( { [ "$impl" = npm ] && run_npm "$d"; } || true; { [ "$impl" = pip ] && run_pip "$d"; } || true )"
   [ "$(cat "$d/CLAUDE.md")" = "MINE" ] && ok "$impl: existing CLAUDE.md untouched" || bad "$impl: CLAUDE.md overwritten"
-  [ -f "$d/allostat/CLAUDE.md.allostat-block" ] && ok "$impl: block file written" || bad "$impl: block file missing"
+  [ -f "$d/allostatik/CLAUDE.md.allostatik-block" ] && ok "$impl: block file written" || bad "$impl: block file missing"
   printf '%s' "$out" | grep -q 'EXISTING project' && ok "$impl: existing mode detected" || bad "$impl: mode detection"
 done
 
 # --- Case 3: guards — refuse overwrite (exit 2) and tool-repo collision (exit 2).
 say "case 3: guards"
 for impl in npm pip; do
-  d="$WORK/guard-$impl"; mkdir -p "$d/allostat"
+  d="$WORK/guard-$impl"; mkdir -p "$d/allostatik"
   rc=0; { [ "$impl" = npm ] && run_npm "$d" >/dev/null 2>&1; } || rc=$?
   { [ "$impl" = pip ] && { run_pip "$d" >/dev/null 2>&1 || rc=$?; }; } || true
-  [ "$rc" -eq 2 ] && ok "$impl: refuses existing allostat/ (exit 2)" || bad "$impl: overwrite guard (exit $rc)"
-  d2="$WORK/guard2-$impl"; mkdir -p "$d2/allostat/templates"
+  [ "$rc" -eq 2 ] && ok "$impl: refuses existing allostatik/ (exit 2)" || bad "$impl: overwrite guard (exit $rc)"
+  d2="$WORK/guard2-$impl"; mkdir -p "$d2/allostatik/templates"
   rc=0; { [ "$impl" = npm ] && run_npm "$d2" >/dev/null 2>&1; } || rc=$?
   { [ "$impl" = pip ] && { run_pip "$d2" >/dev/null 2>&1 || rc=$?; }; } || true
   [ "$rc" -eq 2 ] && ok "$impl: detects tool-repo collision (exit 2)" || bad "$impl: collision guard (exit $rc)"
@@ -82,7 +82,7 @@ done
 
 # --- Case 4: pointer block — all three installers print the IDENTICAL block.
 say "case 4: pointer block in output"
-POINTER_SENTINEL="This is an Allostat project"
+POINTER_SENTINEL="This is an Allostatik project"
 block_of() {  # extract the text between the copy markers, whitespace-normalized
   printf '%s\n' "$1" | sed -n '/copy from here/,/copy to here/p' | sed '1d;$d;s/^ *//'
 }
@@ -100,15 +100,15 @@ done
 [ -n "$BLOCK_SH" ] && [ "$BLOCK_SH" = "$BLOCK_NPM" ] && ok "block text: sh == npm" || { bad "block text: sh vs npm"; diff <(echo "$BLOCK_SH") <(echo "$BLOCK_NPM") || true; }
 [ -n "$BLOCK_SH" ] && [ "$BLOCK_SH" = "$BLOCK_PIP" ] && ok "block text: sh == pip" || { bad "block text: sh vs pip"; diff <(echo "$BLOCK_SH") <(echo "$BLOCK_PIP") || true; }
 # The block must also match the README's, so the most-pasted text can't drift:
-README_BLOCK="$(grep '^> This is an Allostat project' "$ROOT/README.md" | sed 's/^> //')"
+README_BLOCK="$(grep '^> This is an Allostatik project' "$ROOT/README.md" | sed 's/^> //')"
 SH_ONELINE="$(printf '%s' "$BLOCK_SH" | tr '\n' ' ' | sed 's/  */ /g;s/ $//')"
 [ "$SH_ONELINE" = "$README_BLOCK" ] && ok "block text matches README" || { bad "block text vs README"; echo "installer: $SH_ONELINE"; echo "readme:    $README_BLOCK"; }
 
 # --- Case 5: usage errors (exit 1).
 say "case 5: usage"
-rc=0; node "$NPM_PKG/bin/allostat.js" init "$WORK/nope" >/dev/null 2>&1 || rc=$?
+rc=0; node "$NPM_PKG/bin/allostatik.js" init "$WORK/nope" >/dev/null 2>&1 || rc=$?
 [ "$rc" -eq 1 ] && ok "npm: bad target exits 1" || bad "npm: bad target (exit $rc)"
-rc=0; PYTHONPATH="$PIP_PKG/src" python3 -m allostat.cli init "$WORK/nope" >/dev/null 2>&1 || rc=$?
+rc=0; PYTHONPATH="$PIP_PKG/src" python3 -m allostatik.cli init "$WORK/nope" >/dev/null 2>&1 || rc=$?
 [ "$rc" -eq 1 ] && ok "pip: bad target exits 1" || bad "pip: bad target (exit $rc)"
 
 say ""

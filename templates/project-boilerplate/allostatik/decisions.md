@@ -2,7 +2,7 @@
 
 Locked decisions about how this project works — architectural choices, conventions, and resolved tradeoffs. Once something is locked here, don't renegotiate it without raising a checkpoint. This file is the project's reasoning trail: it records not just *what* was decided but *why*, so a later session doesn't relitigate settled ground.
 
-This is the decisions layer, distinct from its `allostat/` siblings — `plan.md` holds current operational state (what's in flight), `observations.md` holds process patterns (how the work tends to go). Point at those rather than restating them here.
+This is the decisions layer, distinct from its `allostatik/` siblings — `plan.md` holds current operational state (what's in flight), `observations.md` holds process patterns (how the work tends to go). Point at those rather than restating them here.
 
 **Update protocol.** At session close, append decisions locked during the session. If a locked decision later changes, mark it rather than deleting it — the trail matters:
 
