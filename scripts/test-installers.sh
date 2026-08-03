@@ -111,6 +111,21 @@ rc=0; node "$NPM_PKG/bin/allostatik.js" init "$WORK/nope" >/dev/null 2>&1 || rc=
 rc=0; PYTHONPATH="$PIP_PKG/src" python3 -m allostatik.cli init "$WORK/nope" >/dev/null 2>&1 || rc=$?
 [ "$rc" -eq 1 ] && ok "pip: bad target exits 1" || bad "pip: bad target (exit $rc)"
 
+# --- Case 6: pre-rename probe — an existing allostat/ refuses with the migrate pointer.
+say "case 6: pre-rename allostat/ probe"
+for impl in sh npm pip; do
+  d="$WORK/oldgen-$impl"; mkdir -p "$d/allostat"
+  rc=0; out=""
+  case "$impl" in
+    sh)  out="$(run_sh  "$d" 2>&1)" || rc=$?;;
+    npm) out="$(run_npm "$d" 2>&1)" || rc=$?;;
+    pip) out="$(run_pip "$d" 2>&1)" || rc=$?;;
+  esac
+  [ "$rc" -eq 2 ] && ok "$impl: refuses beside allostat/ (exit 2)" || bad "$impl: old-gen probe (exit $rc)"
+  printf '%s' "$out" | grep -q 'migrating-from-allostat' && ok "$impl: points at migration steps" || bad "$impl: migration pointer missing"
+  [ -e "$d/allostatik" ] && bad "$impl: wrote despite refusal" || ok "$impl: nothing written"
+done
+
 say ""
 say "passed: $PASS  failed: $FAIL"
 [ "$FAIL" -eq 0 ]

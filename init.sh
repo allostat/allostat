@@ -2,7 +2,7 @@
 # allostatik init — places the allostatik/ template files into a project.
 # Mechanical only, by design: this script fetches REAL files and puts them in
 # the RIGHT place. The walkthrough that fills them stays in workflow.md's
-# first-run routine (greenfield) or its migrate branch (existing project) —
+# first-run routine (greenfield) or its migrate routine (existing project) —
 # run by whatever AI surface you use. Automate the mechanical; gate the meaningful.
 #
 # Usage:
@@ -16,6 +16,15 @@ BOILERPLATE="templates/project-boilerplate"
 TARGET="${1:-}"
 [ -n "$TARGET" ] || { echo "usage: init.sh /path/to/your-project" >&2; exit 1; }
 [ -d "$TARGET" ] || { echo "error: $TARGET is not a directory" >&2; exit 1; }
+
+# --- Probe: a pre-rename install. allostat/ is the old-generation folder name
+# (renamed to allostatik/ at 0.3.0); scaffolding beside it would orphan it silently.
+if [ -d "$TARGET/allostat" ]; then
+  echo "STOP: $TARGET/allostat exists — a pre-rename Allostat install (the folder is allostatik/ since 0.3.0)." >&2
+  echo "Nothing was written. Migrate instead of re-scaffolding:" >&2
+  echo "  https://github.com/allostatik/allostatik#migrating-from-allostat" >&2
+  exit 2
+fi
 
 # --- Guard: the collision case. If target/allostatik exists and looks like the
 # TOOL's repo (has templates/ or concepts.md), the adopter cloned the tool into
@@ -102,10 +111,10 @@ echo "     ----- copy to here -----"
 echo ""
 if [ "$MODE" = "existing" ]; then
   echo "  2. This looks like an EXISTING project. In your first session, Claude should"
-  echo "     follow workflow.md's 'First run — existing project (migrate)' branch:"
+  echo "     follow workflow.md's 'First run — existing project (migrate)' routine:"
   echo "     it walks YOU through each file, drawing on your current docs — it must"
   echo "     not silently bulk-fill them. If it starts writing files without you,"
-  echo "     stop it and point it at that branch."
+  echo "     stop it and point it at that routine."
 else
   echo "  2. Fresh project: your first session runs workflow.md's first-run setup —"
   echo "     Claude proposes, you keep/change/drop, file by file."

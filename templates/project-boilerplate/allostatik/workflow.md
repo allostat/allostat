@@ -52,7 +52,7 @@ Most projects arrive with history: a README, planning docs, conventions files, m
 1. **Inventory first.** List every context-bearing artifact in the project — README, planning/TODO docs, rules files (`.cursorrules`, editor configs), architecture notes, informal decision records. Show the adopter the list and ask what's missing. *Check (output):* the adopter has confirmed the inventory is complete.
 2. **Classify each source: live, archive, or fold-in.** For each artifact, agree: does it stay authoritative where it is (point at it — e.g. a rules file both surfaces already read), become a historical archive (point at it as history), or fold into a canonical file (its content moves)? Record the classification — it becomes a `decisions.md` row at the end. *Check (comparison):* every inventoried artifact has exactly one classification.
 3. **Walk each canonical file, one at a time, drawing on the sources.** In the same dependency order as the fresh-project routine (`project-instructions.md`, then `plan.md`, then the rest). For each: propose a draft **derived from the classified sources**, show it with a note of *which source each part came from*, and let the adopter keep / change / drop / add before it's saved. Never write more than one file ahead of the adopter's review. *Check (state):* no canonical file was written without the adopter seeing its draft.
-4. **Cross-check for silent drops — mandatory, not optional.** After the last file: re-read each source artifact against the canonical set and name anything that appears nowhere — content neither folded in, nor pointed at, nor consciously archived. Surface the orphans and let the adopter decide their home. *Check (comparison):* every load-bearing item in the sources is accounted for. (This step exists because unreviewed migration demonstrably drops content; it is the migrate-branch's version of "confirm it landed.")
+4. **Cross-check for silent drops — mandatory, not optional.** After the last file: re-read each source artifact against the canonical set and name anything that appears nowhere — content neither folded in, nor pointed at, nor consciously archived. Surface the orphans and let the adopter decide their home. *Check (comparison):* every load-bearing item in the sources is accounted for. (This step exists because unreviewed migration demonstrably drops content; it is the migrate routine's version of "confirm it landed.")
 5. **Record the migration.** A `plan.md` session-log entry (what moved, what's archived, what's live-in-place) and a `decisions.md` row for the classification map (e.g. "docs/PLAN.md = archive; .cursorrules = live for code conventions, pointed at not duplicated"). *Check (output):* the next session can reconstruct what happened from the files alone.
 6. **Deploy the pointer and confirm it took** — same as the fresh-project routine, steps 4–5.
 
@@ -60,13 +60,16 @@ Most projects arrive with history: a README, planning docs, conventions files, m
 
 ## Session open
 
-Run these at the start of every session, in order. Don't begin substantive work until all five are done.
+**Contract — the canonical statement other surfaces point at: a session's first reply is this routine's output** (capability check, required reading, drift-check result, state acknowledged, proposed start). If a first reply isn't that, the open was skipped — stop and run it before any work.
+
+Run these at the start of every session, in order. Don't begin substantive work until all six are done.
 
 1. **Verify capability.** Confirm the tools this session needs are attached and scoped to the project — e.g., file access pointed at the right repo. *Check (capability):* the tool reports the expected scope. *If it fails:* halt, say what's missing, and fall back to whatever access is available — or ask the user to attach it — before continuing.
 2. **Read the required context.** Read the handoff, if there is one, and the files it points at — fully, before responding. *Check (output):* you can name what you read. *If it fails:* don't proceed on assumption; ask for the missing file or the command that produces it.
 3. **Run the drift-check.** Compare the canonical files against what's deployed, per the **Drift-check** routine below. *Check (comparison):* canonical matches deployed. *If it fails:* halt and surface the mismatch before anything else — a stale deployed surface silently undoes this session's work.
 4. **Acknowledge the state in your own words.** Briefly restate what's done, what's open, and the immediate task. *Check (output):* the restatement is yours, not a copy of the handoff — putting it in your own words is what surfaces misunderstandings. *If it fails:* flag anything that doesn't line up with what you read.
 5. **Propose a starting point and confirm.** Name where you'd start and why, then wait for the go-ahead. *Check (state):* the user has confirmed. *If it fails:* don't just begin — a wrong starting assumption is cheapest to fix right here.
+6. **Mark the session open in the ledger.** Append one line — `OPENED <session> <YYYY-MM-DD>` — to `allostatik/session-ledger.md`, creating the file on first use. Append-only: never rewrite or delete old lines. (An earlier `OPENED` with no `CLOSED` after it means a prior close was skipped — the drift-check's session-log freshness check owns that repair.) *Check (state):* the ledger's last line is this session's `OPENED`.
 
 ## Drift-check
 
@@ -81,8 +84,9 @@ Your canonical files (in the repo) are the source of truth. Some are also *deplo
 
 Run these at the end of every session, in order. This is the one routine the system's compounding depends on the user actually running — everything else loads on its own, but the close is what carries state forward. Treat it as run-every-session, not optional.
 
-Where a step's mechanism depends on your setup — can Claude write files directly? do you use version control? — it names the common cases. **The handoff (step 6) is the last step that carries state forward; write it only after everything else is confirmed saved**, so it describes real state, not assumed state. Step 7 closes the session. Any project-specific close steps (see *Closing-protocol additions* in Part 2) run alongside these — after the persist/confirm steps and before the handoff.
+Where a step's mechanism depends on your setup — can Claude write files directly? do you use version control? — it names the common cases. **The handoff (step 7) is the last step that carries state forward; write it only after everything else is confirmed saved**, so it describes real state, not assumed state. Step 8 closes the session. Any project-specific close steps (see *Closing-protocol additions* in Part 2) run alongside these — after the persist/confirm steps and before the handoff.
 
+0. **Verify this session opened in the ledger.** `allostatik/session-ledger.md`'s most recent `OPENED` line should be this session's. Missing? The open never ran — run **Session open** retroactively now (at minimum its drift-check and session-log freshness check), then continue the close. The routines guard each other: a skipped open is caught here; a skipped close is caught by the next open's freshness check. *Check (state):* this session's `OPENED` line exists.
 1. **Reflective pass.** Before writing anything down, take one fast pass over the session: any friction points worth fixing? any higher-level framing the step-by-step view missed? any content you produced that's referenced but never written into a canonical file? *Check (comparison):* nothing derived this session is left orphaned — mentioned but not saved anywhere durable. *If it fails:* name it now, so it lands in the right file below.
 2. **Update canonical state.** Fold the session's changes into the files that own them: current state / in-flight work → `plan.md`; newly locked choices → `decisions.md`; new process patterns or re-firings → `observations.md`; direction shifts → `vision.md`; plus any project-specific canonical files listed under *Canonical files* (Part 2). *How they get saved depends on your setup:* Claude writes the files directly (file access to the repo), or hands you each updated file to save yourself (paste / manual-write surfaces). *Check (output):* every change has a durable home.
 3. **Re-paste edited surfaces (SEND).** If you edited a file that's also deployed (global preferences → Custom Instructions; project instructions → project field), re-paste it so the deployed copy matches. *Check (comparison):* deployed now matches canonical. *If you can't re-paste this session:* carry it as a "DO BEFORE THIS HANDOFF IS CONSUMED" item at the top of the handoff, so the next session reconciles before doing anything else.
@@ -92,9 +96,10 @@ Where a step's mechanism depends on your setup — can Claude write files direct
     - **Manual placement:** confirm with the user that each updated file was saved into place.
 
     *Check (state):* what's actually saved matches what you changed. *If it fails:* a write didn't land — redo it and re-check before continuing.
-5. **Commit, push, confirm** *(version control only — skip otherwise)*. Commit with an explicit file list, push, and confirm the remote is in sync. *Check (state):* clean working tree, remote matches local. *If it fails:* resolve before moving on.
-6. **Write the handoff — last.** Everything above is now confirmed saved (and pushed, if you use version control), so the handoff describes real state. Produce it per **Writing the handoff** below. *Check (output):* the handoff exists and points at the canonical files rather than restating them.
-7. **Name the session and confirm it's done.** Suggest a short, descriptive name for this session — what it accomplished — so the conversation is easy to find later, then confirm the session is complete for now. *Check (output):* a name is offered and the wrap is acknowledged.
+5. **Mark the session closed in the ledger.** Append `CLOSED <session>` to `allostatik/session-ledger.md` — the last file write of the close, so it rides the commit in the next step. *Check (state):* the ledger pairs this session's `OPENED` with a `CLOSED`.
+6. **Commit, push, confirm** *(version control only — skip otherwise)*. Commit with an explicit file list, push, and confirm the remote is in sync. *Check (state):* clean working tree, remote matches local. *If it fails:* resolve before moving on.
+7. **Write the handoff — last.** Everything above is now confirmed saved (and pushed, if you use version control), so the handoff describes real state. Produce it per **Writing the handoff** below. *Check (output):* the handoff exists and points at the canonical files rather than restating them.
+8. **Name the session and confirm it's done.** Suggest a short, descriptive name for this session — what it accomplished — so the conversation is easy to find later, then confirm the session is complete for now. *Check (output):* a name is offered and the wrap is acknowledged.
 
 ## Capturing observations and decisions
 
@@ -127,6 +132,12 @@ What every handoff carries:
 Add any conventions specific to *this* project's handoffs under *Handoff conventions* in Part 2.
 
 *Check (attribution):* the handoff points at the canonical files rather than restating them. *Check (output):* it names next-session goals and required reading, and surfaces any blocking carry up top.
+
+## Enforcement — how routine firing is guarded
+
+Instruction files are delivery, not enforcement: nothing in a markdown file can *make* a session run a routine. The floor here is **detection within one session** — the session ledger and the open's contract line make a skipped routine loud before its cost compounds — with the human as the last gate: two ten-second checks. Does the first reply show the open's output? Does the close show the routines followed, a session name, and a confirmed save/commit?
+
+Claude Code adds optional *hard* enforcement via hooks — the one surface with true prevention: a `SessionStart` hook can inject the open instruction deterministically, and a `PreToolUse` hook can refuse `Edit`/`Write` until `allostatik/session-ledger.md` holds this session's `OPENED` line (refuse-before-execution, deliberately not context-sensitive). Desktop and Cowork have no hooks; the ledger plus the contract line are the portable floor everywhere.
 
 ---
 

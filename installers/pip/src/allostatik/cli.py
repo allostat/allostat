@@ -11,7 +11,7 @@ init.sh is a tested invariant (scripts/test-installers.sh).
 
 Mechanical only, by design: this command puts REAL files in the RIGHT place.
 The walkthrough that fills them stays in workflow.md's first-run routine
-(greenfield) or its migrate branch (existing project) — run by whatever AI
+(greenfield) or its migrate routine (existing project) — run by whatever AI
 surface you use. Automate the mechanical; gate the meaningful.
 
 Usage:
@@ -127,6 +127,17 @@ def main(argv: "list[str] | None" = None) -> None:
     if not target_abs.is_dir():
         _fail(f"error: {target} is not a directory", 1)
 
+    # --- Probe: a pre-rename install. allostat/ is the old-generation folder
+    # name (renamed to allostatik/ at 0.3.0); scaffolding beside it would
+    # orphan it silently. Refuse and point at the migration steps.
+    if (target_abs / "allostat").exists():
+        _fail(
+            f"STOP: {target}/allostat exists — a pre-rename Allostat install (the folder is allostatik/ since 0.3.0).\n"
+            "Nothing was written. Migrate instead of re-scaffolding:\n"
+            "  https://github.com/allostatik/allostatik#migrating-from-allostat",
+            2,
+        )
+
     # --- Guard: the collision case. If target/allostatik exists and looks like
     # the TOOL's repo (has templates/ or concepts.md), the adopter cloned the
     # tool into the project — the #1 observed setup mistake. Refuse loudly.
@@ -238,10 +249,10 @@ def main(argv: "list[str] | None" = None) -> None:
     if mode == "existing":
         lines += [
             "  2. This looks like an EXISTING project. In your first session, Claude should",
-            "     follow workflow.md's 'First run — existing project (migrate)' branch:",
+            "     follow workflow.md's 'First run — existing project (migrate)' routine:",
             "     it walks YOU through each file, drawing on your current docs — it must",
             "     not silently bulk-fill them. If it starts writing files without you,",
-            "     stop it and point it at that branch.",
+            "     stop it and point it at that routine.",
         ]
     else:
         lines += [

@@ -107,6 +107,12 @@ The routines live in your project's `workflow.md`; they also ship as installable
 
 **Planned:** cross-surface deploy guides (which field is "project instructions" on each surface — Desktop/Cowork, Cursor, web).
 
+## Migrating from Allostat
+
+0.3.0 renamed the tool and the folder: `allostat/` → `allostatik/`. Existing installs keep working on the old name — nothing breaks by itself — and `allostatik init` refuses to scaffold next to an `allostat/` folder (exit 2, nothing written), so the two generations can't end up side by side.
+
+To migrate a project: with a clean tree, `git mv allostat allostatik`; in `CLAUDE.md`, update the two fence lines (`BEGIN allostat` → `BEGIN allostatik`, same for `END`) and the seven `@allostat/…` imports to `@allostatik/…`; then update `allostat` → `allostatik` inside the folder's own files. Two words must survive that sweep: *allostatic* (the concept) stays as it is, and anything already *allostatik* stays put — replace `allostat` only where it isn't followed by an `i`. Verify: every `@allostatik/…` line in `CLAUDE.md` names a file on disk, and a fresh session orients from the files.
+
 ## Feedback
 
 Issues and PRs welcome — templates and docs especially. Your project config stays yours.

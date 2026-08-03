@@ -12,7 +12,7 @@
  *
  * Mechanical only, by design: this command puts REAL files in the RIGHT
  * place. The walkthrough that fills them stays in workflow.md's first-run
- * routine (greenfield) or its migrate branch (existing project) — run by
+ * routine (greenfield) or its migrate routine (existing project) — run by
  * whatever AI surface you use. Automate the mechanical; gate the meaningful.
  *
  * Usage:
@@ -130,6 +130,20 @@ async function main() {
   const targetAbs = path.resolve(target);
   if (!fs.existsSync(targetAbs) || !fs.statSync(targetAbs).isDirectory()) {
     fail(`error: ${target} is not a directory`, 1);
+  }
+
+  // --- Probe: a pre-rename install. allostat/ is the old-generation folder
+  // name (renamed to allostatik/ at 0.3.0); scaffolding beside it would
+  // orphan it silently. Refuse and point at the migration steps.
+  if (fs.existsSync(path.join(targetAbs, 'allostat'))) {
+    fail(
+      [
+        `STOP: ${target}/allostat exists — a pre-rename Allostat install (the folder is allostatik/ since 0.3.0).`,
+        'Nothing was written. Migrate instead of re-scaffolding:',
+        '  https://github.com/allostatik/allostatik#migrating-from-allostat',
+      ].join('\n'),
+      2
+    );
   }
 
   // --- Guard: the collision case. If target/allostatik exists and looks like
@@ -252,10 +266,10 @@ async function main() {
   if (mode === 'existing') {
     lines.push(
       '  2. This looks like an EXISTING project. In your first session, Claude should',
-      "     follow workflow.md's 'First run — existing project (migrate)' branch:",
+      "     follow workflow.md's 'First run — existing project (migrate)' routine:",
       '     it walks YOU through each file, drawing on your current docs — it must',
       '     not silently bulk-fill them. If it starts writing files without you,',
-      '     stop it and point it at that branch.'
+      '     stop it and point it at that routine.'
     );
   } else {
     lines.push(

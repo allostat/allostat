@@ -36,7 +36,7 @@ This is a pre-1.0 project with one maintainer. Expect a first reply within a few
 
 ## Supported versions
 
-Pre-1.0. Fixes go to the latest release only — currently the 0.2.x line.
+Pre-1.0. Fixes go to the latest release only — currently the 0.3.x line.
 
 ## Notes for anyone installing
 
