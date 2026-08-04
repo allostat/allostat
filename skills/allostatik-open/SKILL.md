@@ -16,9 +16,9 @@ that protect the routine from shortcuts.
 1. **The project's `workflow.md` is authoritative, not this skill.** Projects
    customize Part 2 and may log skip rows in `decisions.md`. If this skill and
    the project's files disagree, the files win.
-2. **No substantive work before the open completes.** All five open steps, in
+2. **No substantive work before the open completes.** All six open steps, in
    order. The user asking an eager first question does not waive the ritual —
-   fold the answer into step 5's proposed starting point.
+   fold the answer into the session plan (step 5).
 3. **Every check failure follows the same pattern: halt, surface, ask.** Never
    silently reconcile drift, never guess at a missing file, never proceed on
    assumption.
@@ -36,14 +36,15 @@ that protect the routine from shortcuts.
    `allostatik/workflow.md` **Session open** + **Drift-check**, then the files
    they point at (`project-instructions.md`, `plan.md`, and the rest of the
    canonical set).
-2. Execute Session open steps 1–5 exactly as the project's copy states them:
+2. Execute Session open steps 1–6 exactly as the project's copy states them:
    verify capability → read context → drift-check → restate the state in your
-   own words → propose a starting point and wait for confirmation.
+   own words → share the numbered session plan and wait for approval → mark
+   the session open in the ledger.
 3. If the handoff carries a "DO BEFORE THIS HANDOFF IS CONSUMED" item, it goes
-   first — before the proposed starting point.
+   first — before the session plan.
 
 ## What good looks like
 
 The user gets: any drift surfaced and reconciled (or explicitly carried), a
 restatement of where things stand that is yours rather than a paste, and a
-proposed first move they confirmed — all before any real work happened.
+numbered session plan they approved — all before any real work happened.
