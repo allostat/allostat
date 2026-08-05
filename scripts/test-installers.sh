@@ -55,15 +55,19 @@ else
   bad "file contents differ between implementations"
 fi
 echo "$T_SH" | grep -q './CLAUDE.md' && ok "CLAUDE.md placed on greenfield" || bad "CLAUDE.md missing on greenfield"
+echo "$T_SH" | grep -q './AGENTS.md' && ok "AGENTS.md placed on greenfield" || bad "AGENTS.md missing on greenfield"
 
 # --- Case 2: existing project — CLAUDE.md preserved, block file written, mode detected.
 say "case 2: existing-project behavior"
 for impl in npm pip; do
   d="$WORK/exist-$impl"; mkdir -p "$d/src"
   printf '# my project\n' > "$d/README.md"; printf 'MINE\n' > "$d/CLAUDE.md"
+  printf 'MINE-A\n' > "$d/AGENTS.md"
   out="$( { [ "$impl" = npm ] && run_npm "$d"; } || true; { [ "$impl" = pip ] && run_pip "$d"; } || true )"
   [ "$(cat "$d/CLAUDE.md")" = "MINE" ] && ok "$impl: existing CLAUDE.md untouched" || bad "$impl: CLAUDE.md overwritten"
   [ -f "$d/allostatik/CLAUDE.md.allostatik-block" ] && ok "$impl: block file written" || bad "$impl: block file missing"
+  [ "$(cat "$d/AGENTS.md")" = "MINE-A" ] && ok "$impl: existing AGENTS.md untouched" || bad "$impl: AGENTS.md overwritten"
+  [ -f "$d/allostatik/AGENTS.md.allostatik-block" ] && ok "$impl: AGENTS sidecar written" || bad "$impl: AGENTS sidecar missing"
   printf '%s' "$out" | grep -q 'EXISTING project' && ok "$impl: existing mode detected" || bad "$impl: mode detection"
 done
 
