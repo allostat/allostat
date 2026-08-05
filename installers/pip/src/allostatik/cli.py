@@ -253,7 +253,7 @@ def main(argv: "list[str] | None" = None) -> None:
         "Next steps (the files take it from here):",
         "  1. Point your project at the files — paste this block into your",
         "     project's instructions (the Project Instructions field in Claude",
-        "     Desktop, or your surface\'s equivalent). Claude Code or Cursor? Skip",
+        "     Desktop, or your surface's equivalent). Claude Code or Cursor? Skip",
         "     this — the placed CLAUDE.md / AGENTS.md does it.",
         "",
         "     ----- copy from here -----",
