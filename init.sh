@@ -20,11 +20,9 @@ TARGET="${1:-}"
 # --- Probe: a pre-rename install. allostat/ is the old-generation folder name
 # (renamed to allostatik/ at 0.3.0); scaffolding beside it would orphan it silently.
 if [ -d "$TARGET/allostat" ]; then
-  echo "STOP: $TARGET/allostat exists — a pre-rename install (the folder is allostatik/ since 0.3.0)." >&2
-  echo "Nothing was written. Migrate instead of re-scaffolding — with a clean tree:" >&2
-  echo "  git mv allostat allostatik; update CLAUDE.md's BEGIN/END fence lines and its" >&2
-  echo "  @allostat/ imports; sweep allostat -> allostatik inside the folder, replacing" >&2
-  echo "  only where the next letter isn't 'i' (that keeps 'allostatic' intact)." >&2
+  echo "STOP: $TARGET/allostat exists — a pre-rename Allostat install (the folder is allostatik/ since 0.3.0)." >&2
+  echo "Nothing was written. Migrate instead of re-scaffolding:" >&2
+  echo "  https://github.com/allostatik/allostatik#migrating-from-allostat" >&2
   exit 2
 fi
 

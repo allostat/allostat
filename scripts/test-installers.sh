@@ -122,7 +122,7 @@ for impl in sh npm pip; do
     pip) out="$(run_pip "$d" 2>&1)" || rc=$?;;
   esac
   [ "$rc" -eq 2 ] && ok "$impl: refuses beside allostat/ (exit 2)" || bad "$impl: old-gen probe (exit $rc)"
-  printf '%s' "$out" | grep -q 'git mv allostat allostatik' && ok "$impl: prints migration steps" || bad "$impl: migration steps missing"
+  printf '%s' "$out" | grep -q 'migrating-from-allostat' && ok "$impl: points at migration steps" || bad "$impl: migration pointer missing"
   [ -e "$d/allostatik" ] && bad "$impl: wrote despite refusal" || ok "$impl: nothing written"
 done
 
