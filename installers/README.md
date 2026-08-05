@@ -11,9 +11,10 @@ Canonical **source** for the two published installers. Both are ports of `init.s
 
 **Releasing:**
 
-1. Bump `version` in `npm/package.json` and `pip/pyproject.toml` + `pip/src/allostatik/__init__.py` (keep them in lockstep).
-2. `scripts/bundle-templates.sh` (refreshes the bundled fallback from `templates/`)
-3. `cd installers/npm && npm publish`
-4. `cd installers/pip && python -m build && twine upload dist/*`
+1. `npm whoami` — the auth gate. Sign-in expires between releases, and an unauthenticated `npm publish` reports **404 Not Found**, not "please sign in" (E401 masking as E404). On E401: `npm login`, bare — never piped; it's a browser/passkey flow.
+2. Bump `version` in `npm/package.json` and `pip/pyproject.toml` + `pip/src/allostatik/__init__.py` (keep them in lockstep).
+3. `scripts/bundle-templates.sh` (refreshes the bundled fallback from `templates/`)
+4. `cd installers/npm && npm publish`
+5. `cd installers/pip && rm -rf dist && python3 -m build && twine upload dist/*` — `python3` (macOS ships no `python` shim); `rm -rf dist` keeps stale artifacts out of the upload; if `twine` isn't on PATH, run it as `uvx twine` or `python3 -m twine`.
 
 Online installs always get current main automatically; the bundled fallback advances only via republish — so republish after significant template changes to keep offline installs close. `init.sh` and the repo always carry current main.
