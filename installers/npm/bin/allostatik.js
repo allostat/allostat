@@ -134,13 +134,15 @@ async function main() {
 
   // --- Probe: a pre-rename install. allostat/ is the old-generation folder
   // name (renamed to allostatik/ at 0.3.0); scaffolding beside it would
-  // orphan it silently. Refuse and point at the migration steps.
+  // orphan it silently. Refuse and print the migration steps.
   if (fs.existsSync(path.join(targetAbs, 'allostat'))) {
     fail(
       [
-        `STOP: ${target}/allostat exists — a pre-rename Allostat install (the folder is allostatik/ since 0.3.0).`,
-        'Nothing was written. Migrate instead of re-scaffolding:',
-        '  https://github.com/allostatik/allostatik#migrating-from-allostat',
+        `STOP: ${target}/allostat exists — a pre-rename install (the folder is allostatik/ since 0.3.0).`,
+        'Nothing was written. Migrate instead of re-scaffolding — with a clean tree:',
+        "  git mv allostat allostatik; update CLAUDE.md's BEGIN/END fence lines and its",
+        '  @allostat/ imports; sweep allostat -> allostatik inside the folder, replacing',
+        "  only where the next letter isn't 'i' (that keeps 'allostatic' intact).",
       ].join('\n'),
       2
     );

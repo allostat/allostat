@@ -129,12 +129,14 @@ def main(argv: "list[str] | None" = None) -> None:
 
     # --- Probe: a pre-rename install. allostat/ is the old-generation folder
     # name (renamed to allostatik/ at 0.3.0); scaffolding beside it would
-    # orphan it silently. Refuse and point at the migration steps.
+    # orphan it silently. Refuse and print the migration steps.
     if (target_abs / "allostat").exists():
         _fail(
-            f"STOP: {target}/allostat exists — a pre-rename Allostat install (the folder is allostatik/ since 0.3.0).\n"
-            "Nothing was written. Migrate instead of re-scaffolding:\n"
-            "  https://github.com/allostatik/allostatik#migrating-from-allostat",
+            f"STOP: {target}/allostat exists — a pre-rename install (the folder is allostatik/ since 0.3.0).\n"
+            "Nothing was written. Migrate instead of re-scaffolding — with a clean tree:\n"
+            "  git mv allostat allostatik; update CLAUDE.md's BEGIN/END fence lines and its\n"
+            "  @allostat/ imports; sweep allostat -> allostatik inside the folder, replacing\n"
+            "  only where the next letter isn't 'i' (that keeps 'allostatic' intact)",
             2,
         )
 

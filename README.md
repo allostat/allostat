@@ -1,18 +1,16 @@
 # Allostatik
 
-*Formerly **Allostat** — renamed at 0.3.0.*
+Your AI's context resets at every conversation, context window, and surface. What resets is the part you can't afford to lose — the decisions you've locked, the conventions you've settled, where the work actually stands.
 
-**Worth reading first (or right after setup):** [why.md](./why.md) — why it exists and what makes it different — and [concepts.md](./concepts.md), the design reasoning underneath.
+Allostatik keeps that context in a folder of plain files you own — `allostatik/` in your project: plan, decisions, observations, project instructions — plus the session routines your AI runs against them: load and drift-check at open, update and hand off at close. Sessions stop opening cold, and corrections outlive the conversation they happened in. The difference from a hand-rolled rules file is the upkeep: the routines drift-check and update the files every session, so they stay true instead of quietly aging.
 
-**A living context layer** — documents you own that keep your project's AI context sharp, consistent, and current across conversations, context windows, and surfaces, plus the session rituals your AI follows to keep them alive. They grow as your project grows. Setup takes about two minutes; the files do the rest.
-
-Nothing runs: no process, no background service, nothing to start or stop. The files act only when your AI reads them in a session, and removing Allostatik is deleting a folder.
+Nothing runs: no process, no background service, nothing to start or stop. The files act only when your AI reads them in a session, and removing Allostatik is deleting a folder. Setup takes about two minutes.
 
 ## Get started
 
 You need a project on local storage — a folder or repo where an `allostatik/` directory can live. Language-agnostic.
 
-**1. Add the `allostatik/` files.** One command — every path places the **real** template files. *(If an AI assistant ever offers to recreate these files from this README instead, decline: a reconstructed set looks right and silently forks the methodology. Use the real files.)*
+**1. Add the `allostatik/` files.** One command — every path places the **real** template files. *(Real files only — if an AI offers to reconstruct them from this README, decline; a reconstructed set looks right and silently forks.)*
 
 Navigate to your project's root folder in your terminal, then any of these works:
 
@@ -31,6 +29,8 @@ or with pip:
 ```
 pip install allostatik && allostatik init .
 ```
+
+*No spare project to try it in?* Use a git worktree of any repo you have — `git worktree add ../allostatik-trial && cd ../allostatik-trial`, install there, work a session or two, and `git worktree remove --force ../allostatik-trial` takes every trace with it. Your main checkout never changes.
 
 All three fetch the current templates from this repo at install time; the npm and pip packages also carry a bundled copy as an offline fallback. Or fully by hand: get this repo (clone or Download ZIP) and copy `templates/project-boilerplate/allostatik/` into your project root — plus `CLAUDE.md` if you use Claude Code (already have a `CLAUDE.md`? add Allostatik's block to it, don't replace it).
 
@@ -57,7 +57,11 @@ A pointer, not a setup. The routine lives in each project's `workflow.md`.
 
 ## What you just installed
 
-Your project's context — purpose, conventions, decisions, environment — now lives in canonical files you own, kept sharp (one source of truth), current (a drift-check at every session edge), and yours (nothing rewrites them without your sign-off). It compounds instead of resetting. The full case is in [why.md](./why.md); the design reasoning is in [concepts.md](./concepts.md).
+- **How it runs.** Open: load the files, drift-check the canonical copies against every deployed one, reconcile before work. Work: the files are the source of truth — stale content gets flagged, not followed. Close: update the files, re-deploy, hand off with pointers rather than copies. Every routine ships with the cheap check that proves it ran.
+- **Why files.** You read exactly what loads, change any of it, and approve what persists. Vendor memory is synthesized; a UI setting goes stale; files are curated, versioned, travel with the repo — and get touched every session, so they can't quietly decay. Each surface becomes an adapter over one shared core instead of another partial copy of you.
+- **What you get.** Context stays lean — knowledge is pointed at, not pasted in. Nothing rewrites your files without your sign-off. And the setpoints themselves can move: stray from a convention once and the files correct you back; stray the same way repeatedly and the system asks whether the convention still fits.
+
+The full case is in [why.md](./why.md); the design reasoning is in [concepts.md](./concepts.md).
 
 ### The files
 
@@ -106,12 +110,6 @@ The routines live in your project's `workflow.md`; they also ship as installable
 **Working:** templates, drift-check, close/update, handoffs, the `allostatik` installers on npm and PyPI (fetch-first with a bundled offline fallback, behavior-parity-tested against `init.sh` — including the pointer block they print), `init.sh` (placement + collision guard), the migrate routine for existing projects, and the shipped skills — `allostatik-init` plus the three session-ritual skills (`allostatik-open`, `allostatik-close`, `allostatik-checkpoint`).
 
 **Planned:** cross-surface deploy guides (which field is "project instructions" on each surface — Desktop/Cowork, Cursor, web).
-
-## Migrating from Allostat
-
-0.3.0 renamed the tool and the folder: `allostat/` → `allostatik/`. Existing installs keep working on the old name — nothing breaks by itself — and `allostatik init` refuses to scaffold next to an `allostat/` folder (exit 2, nothing written), so the two generations can't end up side by side.
-
-To migrate a project: with a clean tree, `git mv allostat allostatik`; in `CLAUDE.md`, update the two fence lines (`BEGIN allostat` → `BEGIN allostatik`, same for `END`) and the seven `@allostat/…` imports to `@allostatik/…`; then update `allostat` → `allostatik` inside the folder's own files. Two words must survive that sweep: *allostatic* (the concept) stays as it is, and anything already *allostatik* stays put — replace `allostat` only where it isn't followed by an `i`. Verify: every `@allostatik/…` line in `CLAUDE.md` names a file on disk, and a fresh session orients from the files.
 
 ## Feedback
 
