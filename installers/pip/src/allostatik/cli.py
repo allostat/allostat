@@ -203,6 +203,21 @@ def main(argv: "list[str] | None" = None) -> None:
         else:
             shutil.copyfile(boilerplate / "CLAUDE.md", target_claude_md)
             claude_note = "CLAUDE.md placed (Claude Code manifest; harmless on other surfaces)"
+
+        # AGENTS.md: same rule — never overwrite. Cursor and other
+        # AGENTS.md-reading surfaces load it from the project root.
+        target_agents_md = target_abs / "AGENTS.md"
+        if target_agents_md.exists():
+            shutil.copyfile(
+                boilerplate / "AGENTS.md", target_allostatik / "AGENTS.md.allostatik-block"
+            )
+            agents_note = (
+                "existing AGENTS.md left untouched — the Allostatik block to add is at "
+                "allostatik/AGENTS.md.allostatik-block"
+            )
+        else:
+            shutil.copyfile(boilerplate / "AGENTS.md", target_agents_md)
+            agents_note = "AGENTS.md placed (Cursor and other AGENTS.md surfaces; harmless elsewhere)"
     finally:
         tmp_ctx.cleanup()
 
@@ -232,14 +247,14 @@ def main(argv: "list[str] | None" = None) -> None:
     ]
     lines = [
         "",
-        f"allostatik/ placed in {target}  ({claude_note})",
+        f"allostatik/ placed in {target}  ({claude_note}; {agents_note})",
         f"  {template_note}",
         "",
         "Next steps (the files take it from here):",
         "  1. Point your project at the files — paste this block into your",
         "     project's instructions (the Project Instructions field in Claude",
-        "     Desktop, or your surface's equivalent). Using Claude Code? Skip",
-        "     this — the placed CLAUDE.md does it.",
+        "     Desktop, or your surface\'s equivalent). Claude Code or Cursor? Skip",
+        "     this — the placed CLAUDE.md / AGENTS.md does it.",
         "",
         "     ----- copy from here -----",
         *pointer_block,

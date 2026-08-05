@@ -40,7 +40,7 @@ All three fetch the current templates from this repo at install time; the npm an
 
 > This is an Allostatik project. The canonical files in its `allostatik/` folder — `project-instructions.md`, `workflow.md`, `plan.md`, `decisions.md`, … — are the source of truth. At the start of a session, read them, follow `workflow.md`, treat them as authoritative, and flag anything stale rather than just following it. If they aren't set up yet, help me set them up — github.com/allostatik/allostatik is the reference.
 
-Its permanent home is your project's instructions (the **Project Instructions** field in Claude Desktop, or your surface's equivalent — using Claude Code? the placed `CLAUDE.md` already does it). The block is only the pointer — the files carry the actual instructions.
+Its permanent home is your project's instructions (the **Project Instructions** field in Claude Desktop, or your surface's equivalent — using Claude Code? the placed `CLAUDE.md` already does it; using Cursor? the placed root `AGENTS.md`/`CLAUDE.md` covers it). The block is only the pointer — the files carry the actual instructions.
 
 **3. Start your first session.** Open a conversation in the project and ask where to start. The pointer you just deployed makes Claude load the files; `workflow.md` runs the rest — it owns the session routines, including this first one. (This works best when your AI can read and write the project's files — Claude Code, Cursor, or Claude Desktop with file access. No file access? `workflow.md` covers paste-based setups; you'll want to be comfortable in the terminal.)
 
@@ -49,7 +49,7 @@ Its permanent home is your project's instructions (the **Project Instructions** 
 
 **4. Confirm it took.** Start a fresh conversation and ask "where do things stand?" Claude should load your files and orient — a drift-check, then current state and next work. If it doesn't, the pointer isn't deployed or points at the wrong place.
 
-**Optional, once per account:** one line in your Custom Instructions lets Claude recognize *any* Allostatik project without a per-project pointer doing all the work:
+**Optional, once per account:** one line in your Custom Instructions (in Cursor, the same slot is Settings → Rules → **User Rules**) lets Claude recognize *any* Allostatik project without a per-project pointer doing all the work:
 
 > Some of my projects use a layered context system: canonical files (an `allostatik/` folder, with a `CLAUDE.md` listing what to load) that are the source of truth. When a project has them: load them, treat them as authoritative, follow its `workflow.md` to keep them in sync (drift-check at start, update at close), and flag anything stale rather than following it. If a project doesn't have them, ignore this.
 

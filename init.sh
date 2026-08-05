@@ -75,6 +75,16 @@ else
   CLAUDE_NOTE="CLAUDE.md placed (Claude Code manifest; harmless on other surfaces)"
 fi
 
+# AGENTS.md: same rule — never overwrite. Cursor and other AGENTS.md-reading
+# surfaces load it from the project root.
+if [ -f "$TARGET/AGENTS.md" ]; then
+  cp "$SRC/AGENTS.md" "$TARGET/allostatik/AGENTS.md.allostatik-block"
+  AGENTS_NOTE="existing AGENTS.md left untouched — the Allostatik block to add is at allostatik/AGENTS.md.allostatik-block"
+else
+  cp "$SRC/AGENTS.md" "$TARGET/AGENTS.md"
+  AGENTS_NOTE="AGENTS.md placed (Cursor and other AGENTS.md surfaces; harmless elsewhere)"
+fi
+
 # --- Verify: every expected file landed.
 MISSING=""
 for f in project-instructions.md plan.md decisions.md observations.md vision.md workflow.md knowledge/resources.md knowledge/environment.md; do
@@ -89,13 +99,13 @@ for probe in README.md docs .cursorrules PLAN.md src; do
 done
 
 echo ""
-echo "allostatik/ placed in $TARGET  ($CLAUDE_NOTE)"
+echo "allostatik/ placed in $TARGET  ($CLAUDE_NOTE; $AGENTS_NOTE)"
 echo ""
 echo "Next steps (the files take it from here):"
 echo "  1. Point your project at the files — paste this block into your"
 echo "     project's instructions (the Project Instructions field in Claude"
-echo "     Desktop, or your surface's equivalent). Using Claude Code? Skip"
-echo "     this — the placed CLAUDE.md does it."
+echo "     Desktop, or your surface\'s equivalent). Claude Code or Cursor? Skip"
+echo "     this — the placed CLAUDE.md / AGENTS.md does it."
 echo ""
 echo "     ----- copy from here -----"
 # Keep VERBATIM in sync with the README's "Point your project at the files"

@@ -220,6 +220,22 @@ async function main() {
     fs.copyFileSync(path.join(boilerplate, 'CLAUDE.md'), targetClaudeMd);
     claudeNote = 'CLAUDE.md placed (Claude Code manifest; harmless on other surfaces)';
   }
+
+  // AGENTS.md: same rule — never overwrite. Cursor and other AGENTS.md-reading
+  // surfaces load it from the project root.
+  let agentsNote;
+  const targetAgentsMd = path.join(targetAbs, 'AGENTS.md');
+  if (fs.existsSync(targetAgentsMd)) {
+    fs.copyFileSync(
+      path.join(boilerplate, 'AGENTS.md'),
+      path.join(targetAllostatik, 'AGENTS.md.allostatik-block')
+    );
+    agentsNote =
+      'existing AGENTS.md left untouched — the Allostatik block to add is at allostatik/AGENTS.md.allostatik-block';
+  } else {
+    fs.copyFileSync(path.join(boilerplate, 'AGENTS.md'), targetAgentsMd);
+    agentsNote = 'AGENTS.md placed (Cursor and other AGENTS.md surfaces; harmless elsewhere)';
+  }
   if (tmpRoot) {
     try { fs.rmSync(tmpRoot, { recursive: true, force: true }); } catch { /* best effort */ }
   }
@@ -249,14 +265,14 @@ async function main() {
   ];
   const lines = [
     '',
-    `allostatik/ placed in ${target}  (${claudeNote})`,
+    `allostatik/ placed in ${target}  (${claudeNote}; ${agentsNote})`,
     `  ${templateNote}`,
     '',
     'Next steps (the files take it from here):',
     '  1. Point your project at the files — paste this block into your',
     "     project's instructions (the Project Instructions field in Claude",
-    "     Desktop, or your surface's equivalent). Using Claude Code? Skip",
-    '     this — the placed CLAUDE.md does it.',
+    "     Desktop, or your surface's equivalent). Claude Code or Cursor? Skip",
+    '     this — the placed CLAUDE.md / AGENTS.md does it.',
     '',
     '     ----- copy from here -----',
     ...POINTER_BLOCK,
