@@ -10,7 +10,7 @@ pip install allostatik && allostatik init .
 curl -fsSL https://raw.githubusercontent.com/allostatik/allostatik/main/init.sh | sh -s -- .
 ```
 
-All three place the same real template files into your project and print the next steps. They fetch the current templates from the repo at install time; the npm and pip packages also carry a bundled copy as an offline fallback. Nothing is overwritten — an existing `allostatik/` folder or `CLAUDE.md` is left alone.
+All three place the same real template files into your project and print the next steps. They fetch the current templates from the repo at install time; the npm and pip packages also carry a bundled copy as an offline fallback. Nothing is overwritten — an existing `allostatik/` folder, `CLAUDE.md`, or `AGENTS.md` is left alone.
 
 Filling the files happens in your first AI session — `workflow.md` walks you (and your AI) through it.
 
