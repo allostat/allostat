@@ -48,9 +48,9 @@ authoritative there.
    - `CLAUDE.md`: never overwrite an existing one — add Allostatik's managed
      block to it instead.
 3. **Deploy the pointer.** The README's pointer block goes into the project's
-   instructions field (or `CLAUDE.md` handles it on Claude Code). Confirm with
-   the person where it landed — this surface-specific step is where setups
-   silently fail.
+   instructions field (or the placed `CLAUDE.md` / `AGENTS.md` handles it on
+   Claude Code and Cursor). Confirm with the person where it landed — this
+   surface-specific step is where setups silently fail.
 4. **Hand off to the canonical routine.** Greenfield → `workflow.md` "First run
    — set up the files." Migrate → `workflow.md` "First run — existing project
    (migrate)". Follow it as written — it is the source of truth for the

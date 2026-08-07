@@ -27,6 +27,11 @@ bad()  { FAIL=$((FAIL+1)); say "  FAIL  $*"; }
 NPM_PKG="$WORK/npm-pkg"; PIP_PKG="$WORK/pip-pkg"
 cp -R "$ROOT/installers/npm" "$NPM_PKG"
 cp -R "$ROOT/installers/pip" "$PIP_PKG"
+# Drop any bundled templates that rode along from a previous local build. With the
+# destination already present, `cp -R src dest` NESTS instead of replacing, leaving the
+# stale bundle at the path the installers actually read — parity would then compare the
+# last release's templates against current source and call it a content mismatch.
+rm -rf "$NPM_PKG/templates" "$PIP_PKG/src/allostatik/templates"
 mkdir -p "$NPM_PKG/templates" "$PIP_PKG/src/allostatik/templates"
 cp -R "$ROOT/templates/project-boilerplate" "$NPM_PKG/templates/project-boilerplate"
 cp -R "$ROOT/templates/project-boilerplate" "$PIP_PKG/src/allostatik/templates/project-boilerplate"
@@ -38,6 +43,15 @@ run_pip() { PYTHONPATH="$PIP_PKG/src" python3 -m allostatik.cli init "$1"; }
 [ -f "$ROOT/init.sh" ] || run_sh() { sh "$ROOT/extraction/init.sh" "$1"; }
 
 tree_of() { (cd "$1" && find . -type f | sort); }
+
+# --- Case 0: harness integrity — the seeded packages must carry SOURCE templates,
+# not a stale local bundle. Without this the suite silently tests the last release.
+say "case 0: harness integrity"
+SRC_WF="$ROOT/templates/project-boilerplate/allostatik/workflow.md"
+cmp -s "$SRC_WF" "$NPM_PKG/templates/project-boilerplate/allostatik/workflow.md" \
+  && ok "npm package seeded from source templates" || bad "npm package seeded from a stale bundle"
+cmp -s "$SRC_WF" "$PIP_PKG/src/allostatik/templates/project-boilerplate/allostatik/workflow.md" \
+  && ok "pip package seeded from source templates" || bad "pip package seeded from a stale bundle"
 
 # --- Case 1: greenfield — identical trees across all three.
 say "case 1: greenfield parity"
@@ -129,6 +143,24 @@ for impl in sh npm pip; do
   printf '%s' "$out" | grep -q 'migrating-from-allostat' && ok "$impl: points at migration steps" || bad "$impl: migration pointer missing"
   [ -e "$d/allostatik" ] && bad "$impl: wrote despite refusal" || ok "$impl: nothing written"
 done
+
+# --- Case 7: both installer packages ship an identical README (registry landing page).
+say "case 7: package READMEs"
+NPM_RM="$ROOT/installers/npm/README.md"; PIP_RM="$ROOT/installers/pip/README.md"
+[ -s "$NPM_RM" ] && ok "npm: README present" || bad "npm: README missing (npm page renders blank)"
+[ -s "$PIP_RM" ] && ok "pip: README present" || bad "pip: README missing (PyPI page renders blank)"
+cmp -s "$NPM_RM" "$PIP_RM" && ok "package READMEs identical" || { bad "package READMEs drifted"; diff "$NPM_RM" "$PIP_RM" || true; }
+
+# --- Case 8: the three version strings move in lockstep (installers/README.md step 2).
+say "case 8: version lockstep"
+V_NPM="$(sed -n 's/.*"version": "\(.*\)".*/\1/p' "$ROOT/installers/npm/package.json" | head -1)"
+V_PIP="$(sed -n 's/^version = "\(.*\)"/\1/p' "$ROOT/installers/pip/pyproject.toml" | head -1)"
+V_INIT="$(sed -n 's/^__version__ = "\(.*\)"/\1/p' "$ROOT/installers/pip/src/allostatik/__init__.py" | head -1)"
+if [ -n "$V_NPM" ] && [ "$V_NPM" = "$V_PIP" ] && [ "$V_NPM" = "$V_INIT" ]; then
+  ok "versions in lockstep ($V_NPM)"
+else
+  bad "version drift: npm=$V_NPM pip=$V_PIP init=$V_INIT"
+fi
 
 say ""
 say "passed: $PASS  failed: $FAIL"
